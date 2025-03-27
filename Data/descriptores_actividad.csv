@@ -1,0 +1,149 @@
+Codigo,DescripcionCompleta
+1 Agricultura,"ganaderia, caza y actividades de servicios conexas"
+2 Silvicultura,extracción de madera y actividades de servicios conexas
+11 Extraccion de petroleo crudo y gas natural; actividades relacionadas con la extracción de petroleo y gas,excepto las actividades de prospeccion.
+19 Curtido y terminacion de cueros; fabricacion de maletas,"bolsos de mano. articulos de talabarteria y guarnicioneria, y calzado"
+28 Fabricacion de productos elaborados de metal,excepto maquinaria y equipo
+30 Fabricacion de maquinaria de oficina,contabilidad e informatica
+32 Fabricacion de equipo y aparatos de radio,television y comunicaciones
+33 Fabricacion de instrumentos medicos,opticos y de precision y fabricacion de relojes
+34 Fabricacion de vehiculos automotores,remolques y semirremolques
+40 Electricidad,gas y agua
+41 Captación,depuración y distribución de agua
+50 Venta,"mantenimiento y reparación de vehículos automotores y de sus partes, piezas y accesorios. venta, mantenimiento y reparación de motocicletas y de sus partes, piezas y accesorios. venta al por menor de combustible para vehículos automotores y motocicletas."
+63 Servicios de manipulación de carga,de almacenamiento y depósito. servicios complementarios para el transporte. servicios de agencias de viaje y otras actividades complementarias de apoyo turístico. servicios de gestión y logística para el transporte de mercaderías
+67 Servicios auxiliares a la actividad financiera,excepto a los servicios de seguros y de administración de fondos de jubilaciones y pensiones
+72 Actividades de informática. serviciosde consultores. procesamiento de datos. mantenimiento y reparacion de maquinaria de oficina,contabilidad e informatica
+74 Servicios jurídicos y de contabilidad,teneduría de libros y auditoría; asesoramiento en materia de impuestos; estudios de mercados y realización de encuestas de opinión pública; asesoramiento empresarial y en materia de gestión.  servicios de arquitectura e ingeniería y servicios técnicos n.c.p. servicios de publicidad. servicios empresariales n.c.p.
+80 Enseñanza. inicial,"primaria, secundaria, superior y formación de posgrado. enseñanza para adultos y servicios de enseñanza n.c.p."
+90 Eliminación de desperdicios y aguas residuales,saneamiento y servicios similares
+91 Servicios de organizaciones empresariales,profesionales y de empleadores. servicios de sindicatos. servicios de asociaciones n.c.p.
+92 Servicios de cinematografía,"radio y televisión y servicios de espectáculos artísticos y de diversión n.c.p.. servicios de agencias de noticias. servicios de bibliotecas, archivos y museos y  servicios culturales n.c.p. servicios para la práctica deportiva y de entretenimiento n.c.p."
+* La rama 75 no corresponde al CIIU,se recodifica para Agencias de empleo eventual
+14 Servicios agrícolas y pecuarios,excepto los veterinarios
+15 Caza  y captura de animales vivos,repoblación  de animales de caza y servicios conexos
+20 Silvicultura,extracción de madera y servicios conexos
+112 Actividades  de servicios relacionadas con la extracción de petróleo y gas,excepto las actividades de prospección
+132 Extracción de minerales metalíferos no ferrosos,excepto minerales de uranio y torio
+141 Extracción de piedra,arena y arcillas
+151 Producción y procesamiento de carne,"pescado, frutas, legumbres, hortalizas, aceites y grasas"
+153 Elaboración de productos de molinería,almidones y productos derivados del almidón y de alimentos preparados para animales
+171 Fabricación  de hilados y  tejidos,acabado de productos textiles
+181 Confección de prendas de vestir,excepto prendas de piel
+202 Fabricación de productos de madera,"corcho, paja y materiales trenzables"
+281 Fabricación de productos metálicos para uso estructural,"tanques, depósitos y generadores de vapor"
+300 Fabricación de maquinaria de oficina,contabilidad e informática
+311 Fabricación de motores,generadores y transformadores eléctricos
+321 Fabricación de tubos,válvulas  y otros  componentes electrónicos
+323 Fabricación de receptores de radio y televisión,"aparatos de grabación y reproducción de sonido y video, y productos conexos"
+331 Fabricación de aparatos e instrumentos médicos y de aparatos para medir,"verificar, ensayar, navegar y otros fines, excepto instrumentos de óptica"
+401 Generación,transporte y distribución de energía eléctrica
+410 Captación,depuración y distribución de agua
+501 Venta de vehículos automotores,excepto motocicletas
+502 Mantenimiento y reparación de vehículos automotores,excepto motocicletas
+503 Venta de partes,piezas y accesorios de vehículos automotores
+512 Venta al por mayor de materias primas agropecuarias,"de animales vivos, alimentos, bebidas y tabaco, excepto en comisión o consignación"
+514 Venta al por mayor de productos intermedios,desperdicios y desechos no agropecuarios
+515 Venta al por mayor de máquinas,equipo y materiales conexos
+522 Venta al por menor de productos alimentarios,bebidas y tabaco en comercios especializados
+523 Venta al por menor de productos n.c.p. excepto los usados,en comercios especializados
+551 Servicios de alojamiento en hoteles,campamentos y otros tipos de hospedaje temporal
+671 Servicios auxiliares a la actividad financiera,excepto a los servicios de seguros y de administración de fondos de jubilaciones y pensiones
+701 Servicios inmobiliarios realizados por cuenta propia,con bienes propios o arrendados
+725 Mantenimiento y reparación de maquinaria de oficina,contabilidad e informática
+741 Servicios jurídicos y de contabilidad,teneduría de libros y auditoría; asesoramiento en materia de impuestos; estudios de mercados y realización de encuestas de opinión pública; asesoramiento empresarial y en materia de gestión
+900 Eliminación de desperdicios y aguas residuales,saneamiento y servicios similares
+921 Servicios de cinematografía,radio y televisión y servicios de espectáculos artísticos y de diversión n.c.p.
+923 Servicios de bibliotecas,archivos y museos y  servicios culturales n.c.p.
+111 Cultivo de cereales,oleaginosas y forrajeras
+112 Cultivo de hortalizas,"legumbres, flores y plantas ornamentales"
+114 Cultivos industriales,de especias y de plantas aromáticas y medicinales
+121 Cría de ganado y producción de leche,lana y pelos
+122 Producción de granja y cría de animales,excepto ganado
+142 Servicios pecuarios,excepto los veterinarios
+150 Caza  y captura de animales vivos,repoblación  de animales de caza y servicios conexos
+502 Explotación de criaderos de peces,granjas piscícolas y otros frutos acuáticos (acuicultura)
+1120 Actividades  de servicios relacionadas con la extracción de petróleo y gas,excepto las actividades de prospección
+1320 Extracción de minerales metalíferos no ferrosos,excepto minerales de uranio y torio
+1413 Extracción de arenas,canto rodado y triturados pétreos
+1421 Extracción de minerales para la fabricación de abonos y productos químicos,excepto turba
+1513 Preparación de frutas,hortalizas y legumbres
+1551 Destilación,rectificación y mezcla de bebidas alcohólicas; producción de alcohol etílico
+1553 Elaboración de cerveza,bebidas malteadas y de malta
+1721 Fabricación de artículos confeccionados de materiales textiles,excepto prendas de vestir
+1723 Fabricación de cuerdas,"cordeles, bramantes y redes"
+1810 Fabricación de prendas de vestir,inclusive de cuero
+1912 Fabricación de maletas,"bolsos de mano y similares, artículos de talabartería y  artículos de cuero n.c.p."
+2021 Fabricación de hojas de madera para enchapado; fabricación de tableros contrachapados,"tableros laminados, tableros de partículas, y  tableros y paneles n.c.p."
+2029 Fabricación de productos de madera n.c.p.; fabricación de artículos de corcho,paja y materiales trenzables
+2101 Fabricación de pasta de madera,papel y cartón
+2211 Edición de libros,"folletos, partituras y otras publicaciones"
+2212 Edición de periódicos,revistas y publicaciones periódicas
+2411 Fabricación de sustancias químicas básicas,excepto abonos y compuestos de nitrógeno
+2423 Fabricación de productos farmacéuticos,sustancias químicas medicinales y productos botánicos
+2424 Fabricación de jabones y detergentes,"preparados para limpiar y pulir, perfumes y preparados de tocador"
+2694 Elaboración de cemento,cal y yeso
+2695 Fabricación de artículos de hormigón,cemento y yeso
+2696 Corte,tallado y acabado de la piedra
+2812 Fabricación de tanques,depósitos y recipientes de metal
+2891 Forjado,"prensado, estampado y laminado de metales; pulvimetalurgia"
+2893 Fabricación de artículos de cuchillería,herramientas de mano y artículos de ferretería
+2911 Fabricación de motores y turbinas,"excepto motores para aeronaves, vehículos automotores y motocicletas"
+2925 Fabricación de maquinaria para la elaboración de alimentos,bebidas y tabaco
+2926 Fabricación de maquinaria para la elaboración de productos textiles,prendas de vestir y cueros
+3000 Fabricación de maquinaria de oficina,contabilidad e informática
+3110 Fabricación de motores,generadores y transformadores eléctricos
+3140 Fabricación de acumuladores,pilas y baterías primarias
+3210 Fabricación de tubos,válvulas  y otros  componentes electrónicos
+3230 Fabricación de receptores de radio y televisión,"aparatos de grabación y reproducción de sonido y video, y productos conexos"
+3310 Fabricación de aparatos e instrumentos médicos y de aparatos para medir,"verificar, ensayar, navegar y otros fines, excepto instrumentos de óptica"
+3590 Fabricación de motocicletas,bicicletas y sillones ortopédicos
+4100 Captación,depuración y distribución de agua
+4512 Perforación y sondeo,"excepto: perforación de pozos de petróleo, de gas, de minas e hidráulicos  y prospección de yacimientos de petróleo"
+4531 Ejecución y mantenimiento de instalaciones eléctricas,electromecánicas y electrónicas
+4532 Aislamiento térmico,"acústico, hídrico y antivibratorio"
+4533 Instalaciones de gas,"agua, sanitarios y de climatización, con sus artefactos conexos"
+4541 Instalaciones de carpintería,herrería de obra y artística
+5011 Venta de vehículos automotores nuevos,excepto motocicletas
+5012 Venta de vehículos automotores usados,excepto motocicletas
+5020 Mantenimiento y reparación de vehículos automotores,excepto motocicletas
+5031 Venta al por mayor de partes,piezas y accesorios de vehículos automotores
+5032 Venta al por menor de partes,piezas y accesorios de vehículos automotores
+5131 Venta al por mayor de productos textiles,"prendas de vestir, calzado excepto el ortopédico, cueros, pieles, artículos de marroquinería,  paraguas y similares"
+5132 Venta al por mayor de libros,"revistas, diarios, papel, cartón, materiales de embalaje y artículos de librería"
+5133 Venta al por mayor de productos farmacéuticos,"veterinarios, cosméticos y de perfumería, instrumental médico y odontológico y artículos ortopédicos"
+5134 Venta al por mayor de artículos de óptica,"fotografía, relojería, joyería y fantasías"
+5135 Venta al por mayor de muebles,artículos de iluminación y  demás artefactos para el hogar
+5141 Venta al por mayor de combustibles,incluso gaseosos y productos conexos
+5143 Venta al por mayor de madera,"materiales de construcción, artículos de ferretería y materiales para plomería e instalaciones de  gas"
+5149 Venta al por mayor de productos intermedios n.c.p.,desperdicios y desechos
+5151 Venta al por mayor de máquinas,equipos e implementos de uso especial
+5153 Venta al por mayor de vehículos,"equipos y máquinas para el transporte ferroviario, aéreo y de navegación"
+5154 Venta al por mayor de muebles e instalaciones para la industria,el comercio y los servicios
+5159 Venta al por mayor de máquinas,equipo y materiales conexos n.c.p.
+5212 Venta al por menor excepto la especializada,sin predominio de productos alimenticios y bebidas
+5221 Venta al por menor de productos de almacén,fiambrería y dietética
+5223 Venta al por menor de frutas,legumbres y hortalizas frescas
+5229 Venta al por menor de productos  alimenticios n.c.p. y tabaco,en comercios especializados
+5231 Venta al por menor de productos farmacéuticos,"cosméticos, de perfumería, instrumental médico y odontológico y artículos ortopédicos"
+5232 Venta al por menor de productos textiles,excepto prendas de vestir
+5233 Venta al por menor de prendas y accesorios de vestir excepto calzado,"artículos de marroquinería, paraguas y similares"
+5234 Venta al por menor de calzado excepto el ortopédico,"artículos de marroquinería, paraguas y similares"
+5235 Venta al  por menor de muebles,"artículos de mimbre y corcho, colchones y somieres, artículos de  iluminación y artefactos para el hogar"
+5236 Venta al por menor de materiales de construcción,"artículos de ferretería, pinturas, cristales y espejos, y artículos para la decoración"
+5237 Venta al por menor de artículos de óptica,"fotografía, relojería, joyería y fantasía"
+5238 Venta al por menor de libros,"revistas, diarios, papel, cartón, materiales de embalaje y artículos de librería"
+5242 Venta al por menor de libros,revistas y similares usados
+5251 Venta al por menor  por correo,"televisión, internet y otros medios de comunicación"
+5521 Servicios de expendio de comidas y bebidas en restaurantes,bares y otros establecimientos con servicio de mesa y/o en mostrador excepto en heladerías
+6719 Servicios auxiliares a la actividad financiera n.c.p.,excepto a los servicios de seguros y de administración de fondos de jubilaciones y pensiones
+7010 Servicios inmobiliarios realizados por cuenta propia,con bienes propios o arrendados
+7111 Alquiler de equipo de transporte para vía terrestre,sin operarios
+7112 Alquiler de equipo de transporte para vía acuática,sin operarios ni tripulación
+7113 Alquiler de equipo de transporte para vía aérea,sin operarios ni tripulación
+7250 Mantenimiento y reparación de maquinaria de oficina,contabilidad e informática
+7410 Servicios jurídicos y de contabilidad,teneduría de libros y auditoría; asesoramiento en materia de impuestos; estudios de mercados y realización de encuestas de opinión pública; asesoramiento empresarial y en materia de gestión
+7496 Servicios de impresión heliográfica,fotocopia y otras formas de reproducciones
+9000 Eliminación de desperdicios y aguas residuales,saneamiento y servicios similares
+9230 Servicios de bibliotecas,archivos y museos y  servicios culturales n.c.p.
+9301 Lavado y limpieza de artículos de tela,"cuero y/o de piel, incluso la limpieza en seco"
