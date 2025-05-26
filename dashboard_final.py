@@ -227,8 +227,12 @@ def preparar_series(df):
     df['Empleo'] = pd.to_numeric(df['Empleo'], errors='coerce')
     
     # Extraer año y trimestre
-    df['Año'] = df['Período'].str.extract(r'(\d{4})').astype(int)
-    df['Trimestre'] = df['Período'].str.extract(r'([1-4])').astype(int)
+    df['Año'] = pd.to_numeric(
+        df['Período'].str.extract(r'(\d{4})')[0], errors='coerce'
+    ).astype('Int64')
+    df['Trimestre'] = pd.to_numeric(
+        df['Período'].str.extract(r'([1-4])')[0], errors='coerce'
+    ).astype('Int64')
     
     # Ordenar cronológicamente
     df = df.sort_values(['Año', 'Trimestre'])
