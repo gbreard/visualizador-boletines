@@ -1,0 +1,60 @@
+EJECUTA ESTOS COMANDOS UNO POR UNO EN POWERSHELL:
+
+1. Verificar en qué rama estás:
+   git branch
+
+2. Si no aparece ninguna rama o no dice "main", ejecuta:
+   git checkout -b main
+
+3. Verificar que todos los archivos están agregados:
+   git status
+
+4. Si hay archivos sin agregar (en rojo), ejecuta:
+   git add .
+
+5. Hacer commit:
+   git commit -m "Dashboard v2.0 - Visualizador interactivo de empleo Argentina"
+
+6. Ahora sí hacer push con -u para establecer upstream:
+   git push -u --force origin main
+
+============================================
+ALTERNATIVA SI SIGUE SIN FUNCIONAR:
+============================================
+
+1. Eliminar la carpeta .git y empezar de cero:
+   Remove-Item -Recurse -Force .git
+
+2. Inicializar git nuevamente:
+   git init
+
+3. Agregar todos los archivos:
+   git add .
+
+4. Hacer primer commit:
+   git commit -m "Dashboard v2.0 - Visualizador interactivo de empleo Argentina"
+
+5. Crear rama main:
+   git branch -M main
+
+6. Agregar el remoto:
+   git remote add origin https://github.com/gbreard/visualizador-boletines.git
+
+7. Push forzado:
+   git push -u --force origin main
+
+============================================
+OPCIÓN MÁS SIMPLE - USAR GITHUB WEB:
+============================================
+
+1. Ve a: https://github.com/gbreard/visualizador-boletines
+
+2. Click en "Add file" -> "Upload files"
+
+3. Arrastra TODOS los archivos de la carpeta produccion
+
+4. Escribe el mensaje: "Dashboard v2.0 - Visualizador interactivo"
+
+5. Click en "Commit changes"
+
+¡LISTO!
