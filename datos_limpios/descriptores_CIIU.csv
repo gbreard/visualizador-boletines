@@ -1,0 +1,519 @@
+﻿Código,Descripción,Nivel,Tabla
+A,"Agricultura, ganaderia, caza y silvicultura",Letra,C3
+B,Pesca y servicios conexos,Letra,C3
+C,Explotacion  de  minas  y  canteras,Letra,C3
+D,Industria manufacturera,Letra,C3
+E,"Electricidad, gas y agua",Letra,C3
+F,Construccion,Letra,C3
+G,Comercio al por mayor y al por menor,Letra,C3
+H,Hotelería y restaurantes,Letra,C3
+I,"Transporte, de almacenamiento y de comunicaciones",Letra,C3
+J,Intermediacion financiera y otros servicios financieros,Letra,C3
+K,"Servicios inmobiliarios, empresariales y de alquiler",Letra,C3
+M,Enseñanza,Letra,C3
+N,Servicios sociales y de salud,Letra,C3
+O,"Servicios comunitarios, sociales y personales n.c.p.",Letra,C3
+1,Agricultura y ganaderia,2 dígitos,C4
+2,"Silvicultura, extracción de madera",2 dígitos,C4
+5,Pesca y actividades relacionadas con la pesca,2 dígitos,C4
+11,Extraccion de petroleo crudo y gas natural,2 dígitos,C4
+13,Extraccion de minerales metaliferos,2 dígitos,C4
+14,Explotacion de otras minas y canteras,2 dígitos,C4
+15,Alimentos,2 dígitos,C4
+16,Tabaco,2 dígitos,C4
+17,Productos textiles,2 dígitos,C4
+18,Confecciones,2 dígitos,C4
+19,Cuero y calzado,2 dígitos,C4
+20,Madera,2 dígitos,C4
+21,Papel,2 dígitos,C4
+22,Edición,2 dígitos,C4
+23,Productos de petróleo,2 dígitos,C4
+24,Productos químicos,2 dígitos,C4
+25,Productos de caucho y plástico,2 dígitos,C4
+26,Otros minerales no metálicos,2 dígitos,C4
+27,Metales comunes,2 dígitos,C4
+28,Otros productos de metal,2 dígitos,C4
+29,Maquinaria y equipo,2 dígitos,C4
+30,Maquinaria de oficina,2 dígitos,C4
+31,Aparatos eléctricos,2 dígitos,C4
+32,Radio y televisión,2 dígitos,C4
+33,Instrumentos médicos,2 dígitos,C4
+34,Automotores,2 dígitos,C4
+35,Otros equipo de transporte,2 dígitos,C4
+36,Muebles,2 dígitos,C4
+37,Reciclamiento de desperdicios y desechos,2 dígitos,C4
+40,"Electricidad, gas y agua",2 dígitos,C4
+41,"Captación, depuración y distribución de agua",2 dígitos,C4
+45,Construcción,2 dígitos,C4
+50,"Vta. y reparación de vehículos, vta. por menor de combustible",2 dígitos,C4
+51,Comercio al por mayor,2 dígitos,C4
+52,Comercio al por menor,2 dígitos,C4
+55,Servicios de hoteleria y restaurantes,2 dígitos,C4
+60,Transporte ferroviario y automotor y por tuberias,2 dígitos,C4
+61,Transporte marítimo y fluvial,2 dígitos,C4
+62,Transporte aéreo de cargas y de pasajeros,2 dígitos,C4
+63,"Manipulación de carga, almacenamiento y depósito",2 dígitos,C4
+64,Correos y telecomunicaciones,2 dígitos,C4
+65,Intermediacion financiera y otros servicios financieros,2 dígitos,C4
+66,Seguros y AFJP,2 dígitos,C4
+67,Servicios auxiliares a la actividad financiera,2 dígitos,C4
+70,Servicios inmobiliarios,2 dígitos,C4
+71,Alquiler de equipo de transporte y de maquinaria,2 dígitos,C4
+72,Actividades de informática,2 dígitos,C4
+73,Investigación y desarrollo,2 dígitos,C4
+74,"Servicios jurídicos, contables y otros servicios a empresas",2 dígitos,C4
+75,Agencias de empleo eventual,2 dígitos,C4
+80,Enseñanza,2 dígitos,C4
+85,Servicios sociales y de salud,2 dígitos,C4
+90,Eliminación de desperdicios,2 dígitos,C4
+91,Servicios de organizaciones empresariales,2 dígitos,C4
+92,"Cinematografía, radio y televisión",2 dígitos,C4
+93,Servicios n.c.p.,2 dígitos,C4
+11,Cultivos agrícolas,3 dígitos,C6
+12,Cría de animales,3 dígitos,C6
+14,"Servicios agrícolas y pecuarios, excepto los veterinarios",3 dígitos,C6
+15,"Caza  y captura de animales vivos, repoblación  de animales de caza y servicios conexos",3 dígitos,C6
+20,"Silvicultura, extracción de madera y servicios conexos",3 dígitos,C6
+50,Pesca y servicios conexos,3 dígitos,C6
+111,Extracción de petróleo crudo y gas natural,3 dígitos,C6
+112,"Actividades de servicios relacionadas con la extracción de petróleo y gas, excepto las actividades de prospección",3 dígitos,C6
+131,Extracción de minerales de hierro,3 dígitos,C6
+132,"Extracción de minerales metalíferos no ferrosos, excepto minerales de uranio y torio",3 dígitos,C6
+141,"Extracción de piedra, arena y arcillas",3 dígitos,C6
+142,Explotación de minas y canteras n.c.p.,3 dígitos,C6
+151,"Producción y procesamiento de carne, pescado, frutas, legumbres, hortalizas, aceites y grasas",3 dígitos,C6
+152,Elaboración de productos lácteos,3 dígitos,C6
+153,"Elaboración de productos de molinería, almidones y productos derivados del almidón y de alimentos preparados para animales",3 dígitos,C6
+154,Elaboración de productos alimenticios n.c.p.,3 dígitos,C6
+155,Elaboración de bebidas,3 dígitos,C6
+160,Elaboración de productos de tabaco,3 dígitos,C6
+171,"Fabricación  de hilados y  tejidos, acabado de productos textiles",3 dígitos,C6
+172,Fabricación de productos textiles n.c.p.,3 dígitos,C6
+173,Fabricación de tejidos de punto y artículos de punto y ganchillo,3 dígitos,C6
+181,"Confección de prendas de vestir, excepto prendas de piel",3 dígitos,C6
+182,Confección de prendas de vestir de piel,3 dígitos,C6
+191,Curtido y terminación de cueros; fabricación de artículos de marroquinería y talabartería,3 dígitos,C6
+192,Fabricación de calzado y de sus partes,3 dígitos,C6
+201,Aserrado y cepillado de madera,3 dígitos,C6
+202,"Fabricación de productos de madera, corcho, paja y materiales trenzables",3 dígitos,C6
+210,Fabricación de papel y de productos de papel,3 dígitos,C6
+221,Edición,3 dígitos,C6
+222,Impresión y servicios conexos,3 dígitos,C6
+223,Reproducción de grabaciones,3 dígitos,C6
+231,Fabricación de productos de hornos de coque,3 dígitos,C6
+232,Fabricación de productos de la refinación del petróleo,3 dígitos,C6
+233,Elaboración de combustible nuclear,3 dígitos,C6
+241,Fabricación de sustancias químicas básicas,3 dígitos,C6
+242,Fabricación de productos químicos n.c.p.,3 dígitos,C6
+243,Fabricación de fibras manufacturadas,3 dígitos,C6
+251,Fabricación de productos de caucho,3 dígitos,C6
+252,Fabricación de productos de plástico,3 dígitos,C6
+261,Fabricación de vidrio y productos de vidrio,3 dígitos,C6
+269,Fabricación de productos minerales no metálicos n.c.p.,3 dígitos,C6
+271,Industrias básicas de hierro y acero,3 dígitos,C6
+272,Fabricación de productos primarios de metales preciosos y metales no ferrosos,3 dígitos,C6
+273,Fundición de metales,3 dígitos,C6
+281,"Fabricación de productos metálicos para uso estructural, tanques, depósitos y generadores de vapor",3 dígitos,C6
+289,Fabricación de productos elaborados de metal n.c.p.; servicios de trabajo de metales,3 dígitos,C6
+291,Fabricación de maquinaria de uso general,3 dígitos,C6
+292,Fabricación de maquinaria de uso especial,3 dígitos,C6
+293,Fabricación de aparatos de uso doméstico n.c.p.,3 dígitos,C6
+300,"Fabricación de maquinaria de oficina, contabilidad e informática",3 dígitos,C6
+311,"Fabricación de motores, generadores y transformadores eléctricos",3 dígitos,C6
+312,Fabricación de aparatos de distribución y control de la energía eléctrica,3 dígitos,C6
+313,Fabricación de hilos y cables aislados,3 dígitos,C6
+314,Fabricación de acumuladores y de pilas y baterías primarias,3 dígitos,C6
+315,Fabricación de lámparas eléctricas y equipo de iluminación,3 dígitos,C6
+319,Fabricación  de equipo eléctrico n.c.p.,3 dígitos,C6
+321,"Fabricación de tubos, válvulas  y otros  componentes electrónicos",3 dígitos,C6
+322,Fabricación  de  transmisores  de  radio  y  televisión  y  de  aparatos para telefonía y telegrafía con hilos,3 dígitos,C6
+323,"Fabricación de receptores de radio y televisión, aparatos de grabación y reproducción de sonido y video",3 dígitos,C6
+331,Fabricación de aparatos e instrumentos médicos y de aparatos para medición,3 dígitos,C6
+332,Fabricación de instrumentos de óptica y equipo fotográfico,3 dígitos,C6
+333,Fabricación de relojes,3 dígitos,C6
+341,Fabricación de vehículos automotores,3 dígitos,C6
+342,Fabricación  de  carrocerías  para  vehículos  automotores;  fabricación de remolques y semirremolques,3 dígitos,C6
+343,Fabricación de partes; piezas y accesorios para vehículos automotores y sus motores,3 dígitos,C6
+351,Construcción y reparación de buques y embarcaciones n.c.p.,3 dígitos,C6
+352,Fabricación de locomotoras y de material rodante para ferrocarriles y tranvías,3 dígitos,C6
+353,Fabricación y reparación de aeronaves,3 dígitos,C6
+359,Fabricación de equipo de transporte n.c.p.,3 dígitos,C6
+361,Fabricación de muebles y colchones,3 dígitos,C6
+369,Industrias manufactureras n.c.p.,3 dígitos,C6
+371,Reciclamiento de desperdicios y desechos metálicos,3 dígitos,C6
+372,Reciclamiento de desperdicios y desechos no metálicos,3 dígitos,C6
+401,"Generación, transporte y distribución de energía eléctrica",3 dígitos,C6
+402,Fabricación de gas y distribución de combustibles gaseosos por tuberías,3 dígitos,C6
+403,Suministro de vapor y agua caliente,3 dígitos,C6
+410,"Captación, depuración y distribución de agua",3 dígitos,C6
+451,Preparación de terrenos para obras,3 dígitos,C6
+452,Construcción de edificios y sus partes y obras de ingeniería civil,3 dígitos,C6
+453,Instalaciones para edificios y obras de ingeniería civil,3 dígitos,C6
+454,Terminación de edificios y obras de ingeniería civil,3 dígitos,C6
+455,Alquiler de equipo de construcción o demolición dotado de operarios,3 dígitos,C6
+501,"Venta de vehículos automotores, excepto motocicletas",3 dígitos,C6
+502,"Mantenimiento y reparación de vehículos automotores, excepto motocicletas",3 dígitos,C6
+503,"Venta de partes, piezas y accesorios de vehículos automotores",3 dígitos,C6
+505,Venta al por menor de combustible para vehículos automotores y motocicletas,3 dígitos,C6
+511,Venta al por mayor en comisión o consignación,3 dígitos,C6
+512,"Venta al por mayor de materias primas agropecuarias, de animales vivos, alimentos, bebidas y tabaco",3 dígitos,C6
+513,Venta al por mayor de artículos de uso doméstico y/o personal,3 dígitos,C6
+514,"Venta al por mayor de productos intermedios, desperdicios y desechos no agropecuarios",3 dígitos,C6
+515,"Venta al por mayor de máquinas, equipo y materiales conexos",3 dígitos,C6
+519,Venta al por mayor de mercancías n.c.p.,3 dígitos,C6
+521,Venta al por menor excepto la especializada,3 dígitos,C6
+522,"Venta al por menor de productos alimentarios, bebidas y tabaco en comercios especializados",3 dígitos,C6
+523,"Venta al por menor de productos n.c.p. excepto los usados, en comercios especializados",3 dígitos,C6
+524,Venta al por menor de artículos usados excluidos automotores y motocicletas,3 dígitos,C6
+525,Venta al por menor no realizada en establecimientos,3 dígitos,C6
+526,Reparación de efectos personales y enseres domésticos,3 dígitos,C6
+551,"Servicios de alojamiento en hoteles, campamentos y otros tipos de hospedaje temporal",3 dígitos,C6
+552,Servicios de expendio de comidas y bebidas,3 dígitos,C6
+601,Servicio de transporte ferroviario,3 dígitos,C6
+602,Servicio de transporte automotor,3 dígitos,C6
+603,Servicio de transporte por tuberías,3 dígitos,C6
+611,Servicio de transporte marítimo,3 dígitos,C6
+612,Servicio de transporte fluvial,3 dígitos,C6
+620,Servicio de transporte,3 dígitos,C6
+631,Servicios de manipulación de carga,3 dígitos,C6
+632,Servicios de almacenamiento y depósito,3 dígitos,C6
+633,Servicios complementarios para el transporte,3 dígitos,C6
+634,Servicios de agencias de viaje y otras actividades complementarias de apoyo turístico,3 dígitos,C6
+635,Servicios de gestión y logística para el transporte de mercaderías,3 dígitos,C6
+641,Servicios de correos,3 dígitos,C6
+642,Servicios de telecomunicaciones,3 dígitos,C6
+652,Intermediación monetaria y financiera de las entidades financieras bancarias y no bancarias,3 dígitos,C6
+659,Servicios financieros excepto los de la banca central y las entidades financieras,3 dígitos,C6
+661,Servicios de seguros,3 dígitos,C6
+662,Servicios de administración de fondos de jubilaciones y pensiones,3 dígitos,C6
+671,Servicios auxiliares a la actividad financiera,3 dígitos,C6
+672,Servicios auxiliares a los servicios de seguros y AFJP,3 dígitos,C6
+701,"Servicios inmobiliarios realizados por cuenta propia, con bienes propios o arrendados",3 dígitos,C6
+702,Servicios inmobiliarios realizados a cambio de una retribución o por contrata,3 dígitos,C6
+711,Alquiler de equipo de transporte,3 dígitos,C6
+712,Alquiler de maquinaria y equipo n.c.p.,3 dígitos,C6
+713,Alquiler de efectos personales y enseres domésticos n.c.p.,3 dígitos,C6
+721,Servicios de consultores en equipo de informática,3 dígitos,C6
+722,Servicios de consultores en informática y suministros de programas de informática,3 dígitos,C6
+723,Procesamiento de datos,3 dígitos,C6
+724,Servicios relacionados con bases de datos,3 dígitos,C6
+725,"Mantenimiento y reparación de maquinaria de oficina, contabilidad e informática",3 dígitos,C6
+729,Actividades de informática n.c.p.,3 dígitos,C6
+730,Investigación y desarrollo experimental,3 dígitos,C6
+741,Servicios jurídicos y contables a empresas,3 dígitos,C6
+742,Servicios de arquitectura e ingeniería y servicios técnicos n.c.p.,3 dígitos,C6
+743,Servicios de publicidad,3 dígitos,C6
+749,Servicios empresariales n.c.p.,3 dígitos,C6
+750,Agencias de empleo eventual,3 dígitos,C6
+800,Enseñanza,3 dígitos,C6
+851,Servicios relacionados con la salud humana,3 dígitos,C6
+852,Servicios veterianrios,3 dígitos,C6
+853,Servicios sociales,3 dígitos,C6
+900,"Eliminación de desperdicios y aguas residuales, saneamiento y servicios similares",3 dígitos,C6
+910,Servicios de organizaciones sindicales y empresarias,3 dígitos,C6
+921,"Servicios de cinematografía, radio y televisión y servicios de espectáculos artísticos y de diversión n.c.p.",3 dígitos,C6
+922,Servicios de agencias de noticias,3 dígitos,C6
+923,"Servicios de bibliotecas, archivos y museos y  servicios culturales n.c.p.",3 dígitos,C6
+924,Servicios para la práctica deportiva y de entretenimiento n.c.p.,3 dígitos,C6
+930,Servicios n.c.p.,3 dígitos,C6
+111,"Cultivo de cereales, oleaginosas y forrajeras",4 dígitos,C7
+112,"Cultivo de hortalizas, legumbres, flores y plantas ornamentales",4 dígitos,C7
+113,Cultivo de frutas  -excepto vid para vinificar- y nueces,4 dígitos,C7
+114,"Cultivos industriales, de especias y de plantas aromáticas y medicinales",4 dígitos,C7
+115,Producción de semillas y otras formas de propagación de cultivos agrícolas,4 dígitos,C7
+121,"Cría de ganado y producción de leche , lana y pelos",4 dígitos,C7
+122,"Producción de granja y cría de animales, excepto ganado",4 dígitos,C7
+141,Servicios agrícolas,4 dígitos,C7
+142,"Servicios pecuarios, excepto los veterinarios",4 dígitos,C7
+150,"Caza  y captura de animales vivos, repoblación  de animales de caza y servicios conexos",4 dígitos,C7
+201,Silvicultura,4 dígitos,C7
+202,Extracción de productos forestales,4 dígitos,C7
+203,Servicios forestales,4 dígitos,C7
+501,Pesca y recolección de productos marinos,4 dígitos,C7
+502,"Explotación de criaderos de peces, granjas piscícolas y otros frutos acuáticos (acuicultura)",4 dígitos,C7
+503,Servicios para la pesca,4 dígitos,C7
+1110,Extracción de petróleo crudo y gas natural,4 dígitos,C7
+1120,"Actividades  de servicios relacionadas con la extracción de petróleo y gas, excepto las actividades de prospección",4 dígitos,C7
+1310,Extracción de minerales de hierro,4 dígitos,C7
+1320,"Extracción de minerales metalíferos no ferrosos,  excepto minerales de uranio y torio",4 dígitos,C7
+1411,Extracción de rocas ornamentales,4 dígitos,C7
+1412,Extracción de piedra caliza y yeso,4 dígitos,C7
+1413,"Extracción de arenas, canto rodado y triturados pétreos",4 dígitos,C7
+1414,Extracción de arcilla y caolín,4 dígitos,C7
+1421,"Extracción de minerales para la fabricación de abonos y productos químicos, excepto turba",4 dígitos,C7
+1422,Extracción de sal en salinas y de roca,4 dígitos,C7
+1429,Explotación de minas y canteras n.c.p.,4 dígitos,C7
+1511,Producción y procesamiento de carne y productos cárnicos,4 dígitos,C7
+1512,Elaboración de pescado y productos de pescado,4 dígitos,C7
+1513,"Preparación de frutas, hortalizas y legumbres",4 dígitos,C7
+1514,Elaboración de aceites y grasas de origen vegetal,4 dígitos,C7
+1520,Elaboración de productos lácteos,4 dígitos,C7
+1531,Elaboración de productos de molinería,4 dígitos,C7
+1532,Elaboración de almidones y productos derivados del almidón,4 dígitos,C7
+1533,Elaboración de alimentos preparados para animales,4 dígitos,C7
+1541,Elaboración de productos de panadería,4 dígitos,C7
+1542,Elaboración de azúcar,4 dígitos,C7
+1543,Elaboración de cacao y chocolate y de productos de confitería,4 dígitos,C7
+1544,Elaboración de pastas alimenticias,4 dígitos,C7
+1549,Elaboración de productos alimenticios n.c.p.,4 dígitos,C7
+1551,"Destilación, rectificación y mezcla de bebidas alcohólicas; producción de alcohol etílico",4 dígitos,C7
+1552,Elaboración de vinos y otras bebidas fermentadas a partir de frutas,4 dígitos,C7
+1553,"Elaboración de cerveza, bebidas malteadas y de malta",4 dígitos,C7
+1554,Elaboración de bebidas no alcohólicas; producción de aguas minerales,4 dígitos,C7
+1600,Elaboración de productos de tabaco,4 dígitos,C7
+1711,Preparación e hilandería de fibras textiles; tejeduría de productos textiles,4 dígitos,C7
+1712,Acabado de productos textiles,4 dígitos,C7
+1721,"Fabricación de artículos confeccionados de materiales textiles, excepto prendas de vestir",4 dígitos,C7
+1722,Fabricación de tapices y alfombras,4 dígitos,C7
+1723,"Fabricación de cuerdas, cordeles, bramantes y redes",4 dígitos,C7
+1729,Fabricación de productos textiles n.c.p.,4 dígitos,C7
+1730,Fabricación de tejidos de punto y artículos de punto y ganchillo,4 dígitos,C7
+1810,"Fabricación de prendas de vestir, inclusive de cuero",4 dígitos,C7
+1820,Terminación y teñido de pieles; fabricación de artículos de piel,4 dígitos,C7
+1911,Curtido y terminación de cueros,4 dígitos,C7
+1912,"Fabricación de maletas, bolsos de mano y similares, artículos de talabartería y  artículos de cuero n.c.p.",4 dígitos,C7
+1920,Fabricación de calzado y de sus partes,4 dígitos,C7
+2010,Aserrado y cepillado de madera,4 dígitos,C7
+2021,"Fabricación de hojas de madera para enchapado; fabricación de tableros contrachapados, tableros laminados, tableros de partículas, y  tableros y paneles n.c.p.",4 dígitos,C7
+2022,Fabricación de partes y piezas de carpintería para edificios y construcciones,4 dígitos,C7
+2023,Fabricación de recipientes de madera,4 dígitos,C7
+2029,"Fabricación de productos de madera n.c.p.; fabricación de artículos de corcho, paja y materiales trenzables",4 dígitos,C7
+2101,"Fabricación de pasta de madera, papel y cartón",4 dígitos,C7
+2102,Fabricación de papel y cartón ondulado y envases de papel y cartón,4 dígitos,C7
+2109,Fabricación de  artículos de papel y cartón,4 dígitos,C7
+2211,"Edición de libros, folletos, partituras y otras publicaciones",4 dígitos,C7
+2212,"Edición de periódicos, revistas y publicaciones periódicas",4 dígitos,C7
+2213,Edición de grabaciones,4 dígitos,C7
+2219,Edición n.c.p.,4 dígitos,C7
+2221,Impresión,4 dígitos,C7
+2222,Servicios relacionados con la impresión,4 dígitos,C7
+2230,Reproducción de grabaciones,4 dígitos,C7
+2310,Fabricación de productos de hornos de coque,4 dígitos,C7
+2320,Fabricación de productos de la refinación del petróleo,4 dígitos,C7
+2330,Elaboración de combustible nuclear,4 dígitos,C7
+2411,"Fabricación de sustancias químicas básicas, excepto abonos y compuestos de nitrógeno",4 dígitos,C7
+2412,Fabricación de abonos y compuestos de nitrógeno,4 dígitos,C7
+2413,Fabricación de plásticos en formas primarias y de caucho sintético,4 dígitos,C7
+2421,Fabricación de plaguicidas y  productos químicos de uso agropecuario,4 dígitos,C7
+2422,Fabricación de pinturas; barnices y productos de revestimiento similares; tintas de imprenta y masillas,4 dígitos,C7
+2423,"Fabricación de productos farmacéuticos, sustancias químicas medicinales y productos botánicos",4 dígitos,C7
+2424,"Fabricación de jabones y detergentes, preparados para limpiar y pulir, perfumes y preparados de tocador",4 dígitos,C7
+2429,Fabricación de productos químicos n.c.p.,4 dígitos,C7
+2430,Fabricación de fibras manufacturadas,4 dígitos,C7
+2511,Fabricación de cubiertas y cámaras de caucho; recauchutado y renovación de cubiertas de caucho,4 dígitos,C7
+2519,Fabricación de productos de caucho n.c.p.,4 dígitos,C7
+2520,Fabricación de productos de plástico,4 dígitos,C7
+2610,Fabricación de vidrio y productos de vidrio,4 dígitos,C7
+2691,Fabricación de productos de cerámica no refractaria para uso no estructural,4 dígitos,C7
+2692,Fabricación de productos de cerámica refractaria,4 dígitos,C7
+2693,Fabricación de productos de arcilla y cerámica no refractaria para uso estructural,4 dígitos,C7
+2694,"Elaboración de cemento, cal y yeso",4 dígitos,C7
+2695,"Fabricación de artículos de hormigón, cemento y yeso",4 dígitos,C7
+2696,"Corte, tallado y acabado de la piedra",4 dígitos,C7
+2699,Fabricación de productos minerales no metálicos n.c.p.,4 dígitos,C7
+2710,Industrias básicas de hierro y acero,4 dígitos,C7
+2720,Fabricación de productos primarios de metales preciosos y metales no ferrosos,4 dígitos,C7
+2731,Fundición de hierro y acero,4 dígitos,C7
+2732,Fundición de metales no ferrosos,4 dígitos,C7
+2811,Fabricación de productos metálicos para uso estructural y montaje estructural,4 dígitos,C7
+2812,"Fabricación de tanques, depósitos y recipientes de metal",4 dígitos,C7
+2813,Fabricación de generadores de vapor,4 dígitos,C7
+2891,"Forjado, prensado, estampado y laminado de metales; pulvimetalurgia",4 dígitos,C7
+2892,Tratamiento y revestimiento de metales; obras de ingeniería mecánica en general realizadas a cambio de una retribución o por contrata,4 dígitos,C7
+2893,"Fabricación de artículos de cuchillería, herramientas de mano y artículos de ferretería",4 dígitos,C7
+2899,Fabricación de productos elaborados de metal  n.c.p.,4 dígitos,C7
+2911,"Fabricación de motores y turbinas, excepto motores para aeronaves, vehículos automotores y motocicletas",4 dígitos,C7
+2912,Fabricación de bombas; compresores; grifos y válvulas,4 dígitos,C7
+2913,Fabricación de cojinetes; engranajes; trenes de engranaje y piezas de transmisión,4 dígitos,C7
+2914,Fabricación de hornos; hogares y quemadores,4 dígitos,C7
+2915,Fabricación de equipo de elevación y manipulación,4 dígitos,C7
+2919,Fabricación de  maquinaria de uso general n.c.p.,4 dígitos,C7
+2921,Fabricación de maquinaria agropecuaria,4 dígitos,C7
+2922,Fabricación de máquinas herramienta,4 dígitos,C7
+2923,Fabricación de maquinaria metalúrgica,4 dígitos,C7
+2924,Fabricación de maquinaria para la explotación de minas y canteras y para obras de construcción,4 dígitos,C7
+2925,"Fabricación de maquinaria para la elaboración de alimentos, bebidas y tabaco",4 dígitos,C7
+2926,"Fabricación de maquinaria para la elaboración de productos textiles, prendas de vestir y cueros",4 dígitos,C7
+2927,Fabricación de armas y municiones,4 dígitos,C7
+2929,Fabricación de maquinaria de uso especial n.c.p.,4 dígitos,C7
+2930,Fabricación de aparatos de uso doméstico n.c.p.,4 dígitos,C7
+3000,"Fabricación de maquinaria de oficina, contabilidad e informática",4 dígitos,C7
+3110,"Fabricación de motores, generadores y transformadores eléctricos",4 dígitos,C7
+3120,Fabricación de aparatos de distribución y control de la energía eléctrica,4 dígitos,C7
+3130,Fabricación de hilos y cables aislados,4 dígitos,C7
+3140,"Fabricación de acumuladores, pilas y baterías primarias",4 dígitos,C7
+3150,Fabricación de lámparas eléctricas y equipo de iluminación,4 dígitos,C7
+3190,Fabricación  de equipo eléctrico n.c.p.,4 dígitos,C7
+3210,"Fabricación de tubos, válvulas  y otros  componentes electrónicos",4 dígitos,C7
+3220,Fabricación de transmisores de radio y televisión y de aparatos para telefonía y telegrafía con hilos,4 dígitos,C7
+3230,"Fabricación de receptores de radio y televisión, aparatos de grabación y reproducción de sonido y video, y productos conexos",4 dígitos,C7
+3310,"Fabricación de aparatos e instrumentos médicos y de aparatos para medir, verificar, ensayar, navegar y otros fines, excepto instrumentos de óptica",4 dígitos,C7
+3311,Fabricación de equipo médico y quirúrgico y de aparatos ortopédicos,4 dígitos,C7
+3320,Fabricación de instrumentos de óptica y equipo fotográfico,4 dígitos,C7
+3330,Fabricación de relojes,4 dígitos,C7
+3410,Fabricación de vehículos automotores,4 dígitos,C7
+3420,Fabricación de carrocerías para vehículos automotores; fabricación de remolques y semirremolques,4 dígitos,C7
+3430,Fabricación de partes; piezas y accesorios para vehículos automotores y sus motores,4 dígitos,C7
+3511,Construcción y reparación de buques,4 dígitos,C7
+3512,Construcción y reparación de embarcaciones de recreo y deporte,4 dígitos,C7
+3520,Fabricación de locomotoras y de material rodante para ferrocarriles y tranvías,4 dígitos,C7
+3530,Fabricación y reparación de aeronaves,4 dígitos,C7
+3590,"Fabricación de motocicletas, bicicletas y sillones ortopédicos",4 dígitos,C7
+3599,Fabricación de equipo de transporte n.c.p.,4 dígitos,C7
+3610,Fabricación de muebles y colchones,4 dígitos,C7
+3691,Fabricación de joyas y artículos conexos,4 dígitos,C7
+3692,Fabricación de instrumentos de música,4 dígitos,C7
+3693,Fabricación de artículos de deporte,4 dígitos,C7
+3694,Fabricación de juegos y juguetes,4 dígitos,C7
+3699,Industrias manufactureras n.c.p.,4 dígitos,C7
+3710,Reciclamiento de desperdicios y desechos metálicos,4 dígitos,C7
+3720,Reciclamiento de desperdicios y desechos no metálicos,4 dígitos,C7
+4011,Generación de energía eléctrica,4 dígitos,C7
+4012,Transporte de energía eléctrica,4 dígitos,C7
+4013,Distribución de energía eléctrica,4 dígitos,C7
+4020,Fabricación de gas y distribución de combustibles gaseosos por tuberías,4 dígitos,C7
+4030,Suministro de vapor y agua caliente,4 dígitos,C7
+4100,"Captación, depuración y distribución de agua",4 dígitos,C7
+4511,Demolición y voladura de edificios y de sus partes,4 dígitos,C7
+4512,"Perforación y sondeo, excepto: perforación de pozos de petróleo, de gas, de minas e hidráulicos  y prospección de yacimientos de petróleo",4 dígitos,C7
+4519,Movimiento de suelos y preparación de terrenos para obras n.c.p.,4 dígitos,C7
+4520,Construcción de edificios y sus partes y obras de ingeniería civil,4 dígitos,C7
+4531,"Ejecución y mantenimiento de instalaciones eléctricas, electromecánicas y electrónicas",4 dígitos,C7
+4532,"Aislamiento térmico, acústico, hídrico y antivibratorio",4 dígitos,C7
+4533,"Instalaciones de gas, agua, sanitarios y de climatización, con sus artefactos conexos",4 dígitos,C7
+4539,Instalaciones para edificios y obras de ingeniería civil n.c.p.,4 dígitos,C7
+4541,"Instalaciones de carpintería, herrería de obra y artística",4 dígitos,C7
+4542,Terminación y revestimiento de paredes y pisos,4 dígitos,C7
+4543,Colocación de cristales en obra,4 dígitos,C7
+4544,Pintura y trabajos de decoración,4 dígitos,C7
+4549,Terminación de edificios y obras de ingeniería civil n.c.p.,4 dígitos,C7
+4550,Alquiler de equipo de construcción o demolición dotado de operarios,4 dígitos,C7
+5011,"Venta de vehículos automotores nuevos, excepto motocicletas",4 dígitos,C7
+5012,"Venta de vehículos automotores usados, excepto motocicletas",4 dígitos,C7
+5020,"Mantenimiento y reparación de vehículos automotores, excepto motocicletas",4 dígitos,C7
+5031,"Venta al por mayor de partes, piezas y accesorios de vehículos automotores",4 dígitos,C7
+5032,"Venta al por menor de partes, piezas y accesorios de vehículos automotores",4 dígitos,C7
+5050,Venta al por menor de combustible para vehículos automotores y motocicletas,4 dígitos,C7
+5111,Venta al por mayor en comisión o consignación de productos agrícolas y pecuarios,4 dígitos,C7
+5119,Venta al por mayor en comisión o consignación de mercancías n.c.p.,4 dígitos,C7
+5121,Venta al por mayor de materias primas agropecuarias y de animales vivos,4 dígitos,C7
+5122,Venta al por mayor de alimentos,4 dígitos,C7
+5123,Venta al por mayor de bebidas,4 dígitos,C7
+5124,Venta al por mayor de cigarrillos y productos de tabaco,4 dígitos,C7
+5131,"Venta al por mayor de productos textiles, prendas de vestir, calzado excepto el ortopédico, cueros, pieles, artículos de marroquinería,  paraguas y similares",4 dígitos,C7
+5132,"Venta al por mayor de libros, revistas, diarios, papel, cartón, materiales de embalaje y artículos de librería",4 dígitos,C7
+5133,"Venta al por mayor de productos farmacéuticos, veterinarios, cosméticos y de perfumería, instrumental médico y odontológico y artículos ortopédicos",4 dígitos,C7
+5134,"Venta al por mayor de artículos de óptica, fotografía, relojería, joyería y fantasías",4 dígitos,C7
+5135,"Venta al por mayor de muebles, artículos de iluminación y  demás artefactos para el hogar",4 dígitos,C7
+5139,Venta al por mayor de artículos de uso doméstico y/o personal n.c.p.,4 dígitos,C7
+5141,"Venta al por mayor de combustibles, incluso gaseosos y productos conexos",4 dígitos,C7
+5142,Venta al por mayor de metales y minerales metalíferos,4 dígitos,C7
+5143,"Venta al por mayor de madera,  materiales de construcción, artículos de ferretería y materiales para plomería e instalaciones de  gas",4 dígitos,C7
+5149,"Venta al por mayor de productos intermedios n.c.p., desperdicios y desechos",4 dígitos,C7
+5151,"Venta al por mayor de máquinas, equipos e implementos de uso especial",4 dígitos,C7
+5152,Venta al por mayor de máquinas-herramienta de uso general,4 dígitos,C7
+5153,"Venta al por mayor de vehículos, equipos y máquinas para el transporte ferroviario, aéreo y de navegación",4 dígitos,C7
+5154,"Venta al por mayor de muebles e instalaciones para la industria, el comercio y los servicios",4 dígitos,C7
+5159,"Venta al por mayor de máquinas, equipo y materiales conexos n.c.p.",4 dígitos,C7
+5190,Venta al por mayor de mercancías n.c.p.,4 dígitos,C7
+5211,Venta al por menor en comercios no especializados con predominio de productos alimenticios y bebidas,4 dígitos,C7
+5212,"Venta al por menor excepto la especializada, sin predominio de productos alimenticios y bebidas",4 dígitos,C7
+5221,"Venta al por menor de productos de almacén, fiambrería y dietética",4 dígitos,C7
+5222,Venta al por menor de carnes rojas y productos de granja y de la caza,4 dígitos,C7
+5223,"Venta al por menor de frutas, legumbres y hortalizas frescas",4 dígitos,C7
+5224,Venta al por menor de pan y productos de panadería y confitería,4 dígitos,C7
+5225,Venta al por menor de bebidas,4 dígitos,C7
+5229,"Venta al por menor de productos  alimenticios n.c.p. y tabaco, en comercios especializados",4 dígitos,C7
+5231,"Venta al por menor de productos farmacéuticos, cosméticos, de perfumería, instrumental médico y odontológico y artículos ortopédicos",4 dígitos,C7
+5232,"Venta al por menor de productos textiles, excepto prendas de vestir",4 dígitos,C7
+5233,"Venta al por menor de prendas y accesorios de vestir excepto calzado, artículos de marroquinería, paraguas y similares",4 dígitos,C7
+5234,"Venta al por menor de calzado excepto el ortopédico, artículos de marroquinería, paraguas y similares",4 dígitos,C7
+5235,"Venta al  por menor de muebles, artículos de mimbre y corcho, colchones y somieres, artículos de  iluminación y artefactos para el hogar",4 dígitos,C7
+5236,"Venta al por menor de materiales de construcción, artículos de ferretería, pinturas, cristales y espejos, y artículos para la decoración",4 dígitos,C7
+5237,"Venta al por menor de artículos de óptica, fotografía, relojería, joyería y fantasía",4 dígitos,C7
+5238,"Venta al por menor de libros, revistas, diarios, papel, cartón, materiales de embalaje y artículos de librería",4 dígitos,C7
+5239,Venta al por menor en comercios especializados n.c.p.,4 dígitos,C7
+5241,Venta al por menor de muebles usados,4 dígitos,C7
+5242,"Venta al por menor de libros, revistas y similares usados",4 dígitos,C7
+5249,Venta al por menor de artículos usados n.c.p.,4 dígitos,C7
+5251,"Venta al por menor  por correo, televisión, internet y otros medios de comunicación",4 dígitos,C7
+5252,Venta al por menor en puestos móviles,4 dígitos,C7
+5259,Venta al por menor no realizada en establecimientos  n.c.p.,4 dígitos,C7
+5261,Reparación de calzado y artículos de marroquinería,4 dígitos,C7
+5262,Reparación de artículos eléctricos de uso doméstico,4 dígitos,C7
+5269,Reparación de efectos personales y enseres domésticos n.c.p.,4 dígitos,C7
+5511,Servicios de alojamiento en camping,4 dígitos,C7
+5512,Servicios de alojamiento excepto en camping,4 dígitos,C7
+5521,"Servicios de expendio de comidas y bebidas en restaurantes, bares y otros establecimientos con servicio de mesa y/o en mostrador excepto en heladerías",4 dígitos,C7
+5522,Preparación y venta de comidas para llevar,4 dígitos,C7
+6010,Servicio de transporte ferroviario,4 dígitos,C7
+6021,Servicio de transporte automotor de cargas,4 dígitos,C7
+6022,Servicio de transporte automotor de pasajeros,4 dígitos,C7
+6030,Servicio de transporte por tuberías,4 dígitos,C7
+6110,Servicio de transporte marítimo,4 dígitos,C7
+6120,Servicio de transporte fluvial,4 dígitos,C7
+6200,Servicio de transporte aéreo de carga y de pasajeros,4 dígitos,C7
+6310,Servicios de manipulación de carga,4 dígitos,C7
+6320,Servicios de almacenamiento y depósito,4 dígitos,C7
+6331,Servicios complementarios para el transporte terrestre,4 dígitos,C7
+6332,Servicios complementarios para el transporte por agua,4 dígitos,C7
+6333,Servicios complementarios para el transporte aéreo,4 dígitos,C7
+6340,Servicios de agencias de viaje y actividades complementarias de apoyo turístico,4 dígitos,C7
+6350,Servicios de gestión y logística para el transporte de mercaderías,4 dígitos,C7
+6410,Servicios de correos,4 dígitos,C7
+6420,Servicios de telecomunicaciones,4 dígitos,C7
+6521,Servicios de las entidades financieras bancarias,4 dígitos,C7
+6522,Servicios de las entidades financieras no bancarias,4 dígitos,C7
+6590,Servicios financieros excepto los de la banca central y las entidades financieras,4 dígitos,C7
+6610,Servicios de seguros,4 dígitos,C7
+6620,Administración de fondos de jubilaciones y pensiones (AFJP),4 dígitos,C7
+6711,Servicios de administración de mercados financieros,4 dígitos,C7
+6712,Servicios bursátiles de mediación o por cuenta de terceros,4 dígitos,C7
+6719,"Servicios auxiliares a la actividad financiera n.c.p., excepto a los servicios de seguros y de administración de fondos de jubilaciones y pensiones",4 dígitos,C7
+6721,Servicios auxiliares a los servicios de seguros,4 dígitos,C7
+6722,Servicios auxiliares a la administración de fondos de jubilaciones y pensiones,4 dígitos,C7
+7010,"Servicios inmobiliarios realizados por cuenta propia, con bienes propios o arrendados",4 dígitos,C7
+7020,Servicios inmobiliarios realizados a cambio de un retribución o por contrata,4 dígitos,C7
+7111,"Alquiler de equipo de transporte para vía terrestre, sin operarios",4 dígitos,C7
+7112,"Alquiler de equipo de transporte para vía acuática, sin operarios ni tripulación",4 dígitos,C7
+7113,"Alquiler de equipo de transporte para vía aérea, sin operarios ni tripulación",4 dígitos,C7
+7120,Alquiler de maquinaria y equipo n.c.p.,4 dígitos,C7
+7130,Alquiler de efectos personales y enseres domésticos n.c.p.,4 dígitos,C7
+7210,Servicios de consultores en equipo de informática,4 dígitos,C7
+7220,Servicios de consultores en informática y suministros de programas de informática,4 dígitos,C7
+7230,Procesamiento de datos,4 dígitos,C7
+7240,Servicios relacionados con bases de datos,4 dígitos,C7
+7250,"Mantenimiento y reparación de maquinaria de oficina, contabilidad e informática",4 dígitos,C7
+7290,Actividades de informática n.c.p.,4 dígitos,C7
+7300,Investigación y desarrollo,4 dígitos,C7
+7410,"Servicios jurídicos y de contabilidad, teneduría de libros y auditoría; asesoramiento en materia de impuestos; estudios de mercados y realización de encuestas de opinión pública; asesoramiento empresarial y en materia de gestión",4 dígitos,C7
+7421,Servicios de arquitectura e ingeniería y servicios conexos de asesoramiento técnico,4 dígitos,C7
+7422,Ensayos y análisis técnicos,4 dígitos,C7
+7430,Servicios de publicidad,4 dígitos,C7
+7491,Obtención y dotación de personal,4 dígitos,C7
+7492,Servicios de investigación y seguridad,4 dígitos,C7
+7493,Servicios de limpieza de edificios,4 dígitos,C7
+7494,Servicios de fotografía,4 dígitos,C7
+7495,Servicios de envase y empaque,4 dígitos,C7
+7496,"Servicios de impresión heliográfica, fotocopia y otras formas de reproducciones",4 dígitos,C7
+7499,Servicios empresariales n.c.p.,4 dígitos,C7
+7500,Agencias de empleo eventual,4 dígitos,C7
+8000,Enseñanza,4 dígitos,C7
+8510,Servicios relacionados con la salud humana,4 dígitos,C7
+8520,Servicios veterinarios,4 dígitos,C7
+8530,Servicios sociales,4 dígitos,C7
+9000,"Eliminación de desperdicios y aguas residuales, saneamiento y servicios similares",4 dígitos,C7
+9100,Servicios de asociaciones n.c.p.,4 dígitos,C7
+9211,Producción y distribución de filmes y videocintas,4 dígitos,C7
+9212,Exhibición de filmes y videocintas,4 dígitos,C7
+9213,Servicios de radio y televisión,4 dígitos,C7
+9214,Servicios teatrales y musicales y servicios artísticos n.c.p.,4 dígitos,C7
+9219,Servicios de espectáculos artísticos y de diversión  n.c.p.,4 dígitos,C7
+9220,Servicios de agencias de noticias,4 dígitos,C7
+9230,"Servicios de bibliotecas, archivos y museos y  servicios culturales n.c.p.",4 dígitos,C7
+9241,Servicios para prácticas deportivas,4 dígitos,C7
+9249,Servicios de esparcimiento n.c.p.,4 dígitos,C7
+9301,"Lavado y limpieza de artículos de tela, cuero y/o de piel, incluso la limpieza en seco",4 dígitos,C7
+9302,Servicios de peluquería y  tratamientos de belleza,4 dígitos,C7
+9303,Pompas fúnebres y servicios conexos,4 dígitos,C7
+9309,Servicios n.c.p.,4 dígitos,C7
