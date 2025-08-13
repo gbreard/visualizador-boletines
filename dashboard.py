@@ -25,7 +25,6 @@ logger = logging.getLogger(__name__)
 # CONFIGURACIÓN Y CONSTANTES
 # =====================================================================
 
-DATA_DIR = 'datos_limpios'
 CACHE_SIZE = 128
 
 # Mapeo de trimestres a meses para fechas
@@ -55,10 +54,14 @@ COLORS = {
 @lru_cache(maxsize=1)
 def load_all_data():
     """
-    Carga todos los datos desde Parquet (si existe) o CSV.
-    Retorna un diccionario con todos los DataFrames.
+    Carga todos los datos desde Parquet optimizado.
+    Solo usa Parquet para máximo rendimiento en producción.
     """
-    logger.info("Cargando todos los datos...")
+    logger.info("="*60)
+    logger.info("INICIANDO CARGA DE DATOS (SOLO PARQUET)")
+    logger.info(f"Directorio actual: {os.getcwd()}")
+    logger.info(f"Existe datos_rapidos?: {os.path.exists('datos_rapidos')}")
+    logger.info("="*60)
     data = {}
     
     # Mapeo de nombres para archivos Parquet
@@ -78,22 +81,21 @@ def load_all_data():
     parquet_dir = 'datos_rapidos'
     
     for key in ['C1.1', 'C1.2', 'C2.1', 'C2.2', 'C3', 'C4', 'C5', 'C6', 'C7', 'descriptores_CIIU']:
-        # Intentar cargar Parquet primero (más rápido)
+        # Cargar solo desde Parquet (producción optimizada)
         parquet_file = parquet_mapping.get(key)
         parquet_path = os.path.join(parquet_dir, parquet_file) if parquet_file else None
-        csv_path = os.path.join(DATA_DIR, f'{key}.csv')
         
         if parquet_path and os.path.exists(parquet_path):
             df = pd.read_parquet(parquet_path)
             logger.info(f"  {key}: {len(df)} registros cargados desde Parquet")
-        elif os.path.exists(csv_path):
-            df = pd.read_csv(csv_path)
-            logger.info(f"  {key}: {len(df)} registros cargados desde CSV")
         else:
-            logger.warning(f"  {key}: No se encontró archivo")
+            logger.warning(f"  {key}: No se encontró archivo Parquet")
             continue
             
         # Procesar períodos si existe la columna
+        # Manejar ambos casos de encoding
+        if 'Per�odo' in df.columns:
+            df = df.rename(columns={'Per�odo': 'Período'})
         if 'Período' in df.columns:
             df = process_periods(df)
         
