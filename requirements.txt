@@ -1,3 +1,5 @@
 dash==2.14.2
 plotly==5.18.0
 gunicorn==21.2.0
+pandas==1.5.3
+pyarrow==14.0.2
