@@ -9,13 +9,20 @@ import json
 import logging
 
 # Configurar logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
-logger.info("="*60)
-logger.info("DASHBOARD FINAL - SIN PANDAS")
-logger.info(f"Directorio: {os.getcwd()}")
-logger.info("="*60)
+try:
+    logger.info("="*60)
+    logger.info("DASHBOARD FINAL - SIN PANDAS")
+    logger.info(f"Directorio: {os.getcwd()}")
+    logger.info(f"Python version: {os.sys.version}")
+    logger.info("="*60)
+except Exception as e:
+    logger.error(f"Error en inicialización: {e}")
 
 # Crear aplicación Dash
 app = dash.Dash(__name__)
@@ -190,6 +197,9 @@ def render_content(tab):
         ])
 
 logger.info("Dashboard Final configurado exitosamente")
+logger.info(f"Server object created: {server}")
 
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=8050)
+    port = int(os.environ.get('PORT', 8050))
+    logger.info(f"Starting server on port {port}")
+    app.run_server(debug=False, host='0.0.0.0', port=port)
