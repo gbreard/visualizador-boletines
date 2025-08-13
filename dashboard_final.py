@@ -4,7 +4,6 @@ Dashboard Final - Sin pandas, con datos simulados de los archivos reales
 import dash
 from dash import dcc, html, Input, Output, dash_table
 import plotly.graph_objects as go
-import plotly.express as px
 import os
 import json
 import logging
@@ -116,20 +115,22 @@ def render_content(tab):
     
     elif tab == 'tab-2':
         # Gráfico por sector
-        fig = px.pie(
+        fig = go.Figure(data=[go.Pie(
+            labels=sectores,
             values=empleo_por_sector,
-            names=sectores,
-            title='Distribución del Empleo por Sector',
             hole=0.3
-        )
+        )])
+        fig.update_layout(title='Distribución del Empleo por Sector')
         fig.update_traces(textposition='inside', textinfo='percent+label')
         
-        fig2 = px.bar(
+        # Gráfico de barras
+        colors = ['#3498db', '#e74c3c', '#2ecc71', '#f39c12', '#9b59b6']
+        fig2 = go.Figure(data=[go.Bar(
             x=sectores,
             y=empleo_por_sector,
-            title='Empleo por Sector',
-            color=sectores
-        )
+            marker_color=colors
+        )])
+        fig2.update_layout(title='Empleo por Sector')
         
         return html.Div([
             html.H3("Análisis Sectorial"),
