@@ -18,8 +18,18 @@ from functools import lru_cache
 import logging
 
 # Configurar logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
+
+# Log inicial para verificar que el módulo se carga
+logger.info("="*60)
+logger.info("CARGANDO MÓDULO DASHBOARD.PY")
+logger.info(f"Python ejecutándose desde: {os.getcwd()}")
+logger.info(f"Archivos en el directorio: {os.listdir('.')[:10]}")
+logger.info("="*60)
 
 # =====================================================================
 # CONFIGURACIÓN Y CONSTANTES
@@ -2255,14 +2265,15 @@ server = app.server
 
 if __name__ == '__main__':
     logger.info("Iniciando Dashboard V1...")
-    logger.info(f"Directorio de datos: {DATA_DIR}")
+    logger.info(f"Directorio actual: {os.getcwd()}")
     
-    # Verificar que existan los archivos necesarios
-    required_files = ['C1.1.csv', 'C1.2.csv', 'descriptores_CIIU.csv']
+    # Verificar que existan los archivos Parquet necesarios
+    parquet_dir = 'datos_rapidos'
+    required_files = ['c11.parquet', 'c12.parquet', 'descriptores.parquet']
     missing_files = []
     
     for file in required_files:
-        file_path = os.path.join(DATA_DIR, file)
+        file_path = os.path.join(parquet_dir, file)
         if not os.path.exists(file_path):
             missing_files.append(file)
     
