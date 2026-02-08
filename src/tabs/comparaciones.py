@@ -325,13 +325,24 @@ def register_comparaciones_callbacks(app):
 
         # Grafico de barras horizontales
         df_sorted = df_comp.sort_values('Diferencia')
+        # Escala: rojo (negativo) -> blanco (neutro) -> celeste (positivo)
+        midpoint = 0 if tipo != 'ratio' else 1
+        custom_scale = [
+            [0.0, '#B91C1C'],    # rojo oscuro
+            [0.25, '#EF4444'],   # rojo
+            [0.45, '#FCA5A5'],   # rojo claro
+            [0.5, '#F9FAFB'],    # blanco/neutro
+            [0.55, '#A5D8FF'],   # celeste claro
+            [0.75, '#4FC3F7'],   # celeste
+            [1.0, '#0288D1'],    # celeste oscuro
+        ]
         fig = px.bar(
             df_sorted,
             x='Diferencia', y='Descripcion', orientation='h',
             title=f'{var_cfg["label"]}: {p_posterior} vs {p_anterior}',
             color='Diferencia',
-            color_continuous_scale='RdBu_r',
-            color_continuous_midpoint=0 if tipo != 'ratio' else 1
+            color_continuous_scale=custom_scale,
+            color_continuous_midpoint=midpoint
         )
         fig.update_layout(**PLOTLY_TEMPLATE['layout'])
         fig.update_layout(yaxis_title='', height=450)
