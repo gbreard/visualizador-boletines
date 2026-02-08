@@ -1,21 +1,128 @@
 """
 Tab Analisis: unifica Temporal + Sectorial + Por Tamano con toggle.
+Soporta multiples fuentes de datos (empleo, remuneraciones, empresas, flujos, genero).
 """
 
-from dash import html, dcc, Input, Output, dash_table, callback_context
+from dash import html, dcc, Input, Output, State, dash_table, callback_context, no_update
 from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 
-from src.config import COLORS, SECTOR_COLORS, PLOTLY_TEMPLATE
+from src.config import COLORS, SECTOR_COLORS, PLOTLY_TEMPLATE, SECTOR_CIIU_LETRA
 from src.data.cache import cache
 from src.data.processing import filter_by_dates, process_periods, calculate_variations, get_latest_period_str
 from src.layout.components import empty_state, create_section_card
 
+# ---------------------------------------------------------------------------
+# Config: Temporal variables
+# ---------------------------------------------------------------------------
+# Each entry: dataset, y_col, y_label, unit, has_serie_base, multi_series, group_col
+TEMPORAL_VARIABLES = {
+    'empleo': {
+        'label': 'Empleo',
+        'dataset': {'estacional': 'C1.1', 'desest': 'C1.2'},
+        'y_col': 'Empleo', 'y_label': 'Empleo (puestos de trabajo)',
+        'unit': 'puestos', 'has_serie_base': True, 'has_metrica': True,
+    },
+    'remuneracion_promedio': {
+        'label': 'Remuneracion Promedio',
+        'dataset': 'R1',
+        'y_col': 'Remuneracion', 'y_label': 'Remuneracion promedio ($)',
+        'unit': '$', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'remuneracion_mediana': {
+        'label': 'Remuneracion Mediana',
+        'dataset': 'R2',
+        'y_col': 'Remuneracion', 'y_label': 'Remuneracion mediana ($)',
+        'unit': '$', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'total_empresas': {
+        'label': 'Total Empresas',
+        'dataset': 'E1',
+        'y_col': 'Empresas', 'y_label': 'Cantidad de empresas',
+        'unit': 'empresas', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'flujos_altas': {
+        'label': 'Altas de Empleo',
+        'dataset': 'F1',
+        'y_col': 'Altas', 'y_label': 'Altas de empleo',
+        'unit': 'puestos', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'flujos_bajas': {
+        'label': 'Bajas de Empleo',
+        'dataset': 'F1',
+        'y_col': 'Bajas', 'y_label': 'Bajas de empleo',
+        'unit': 'puestos', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'flujos_creacion': {
+        'label': 'Creacion Neta',
+        'dataset': 'F1',
+        'y_col': 'Creacion_Neta', 'y_label': 'Creacion neta de empleo',
+        'unit': 'puestos', 'has_serie_base': False, 'has_metrica': False,
+    },
+    'tasas_rotacion': {
+        'label': 'Tasas de Rotacion',
+        'dataset': 'F2',
+        'y_col': ['Tasa_Entrada', 'Tasa_Salida', 'Tasa_Rotacion'],
+        'y_label': 'Tasa (%)',
+        'series_names': ['Tasa Entrada', 'Tasa Salida', 'Tasa Rotacion'],
+        'unit': '%', 'has_serie_base': False, 'has_metrica': False,
+        'multi_series': True,
+    },
+    'empleo_genero': {
+        'label': 'Empleo por Genero',
+        'dataset': 'G1',
+        'y_col': 'Empleo', 'y_label': 'Empleo (miles)',
+        'unit': 'miles', 'has_serie_base': False, 'has_metrica': False,
+        'group_col': 'Sexo',
+    },
+    'brecha_salarial': {
+        'label': 'Brecha Salarial',
+        'dataset': 'G2',
+        'y_col': 'Brecha', 'y_label': 'Brecha salarial (%)',
+        'unit': '%', 'has_serie_base': False, 'has_metrica': False,
+    },
+}
+
+# ---------------------------------------------------------------------------
+# Config: Sectorial sources
+# ---------------------------------------------------------------------------
+SECTORIAL_SOURCES = {
+    'empleo': {
+        'label': 'Empleo',
+        'has_nivel': True,
+        'datasets': {'C3': 'C3', 'C4': 'C4', 'C6': 'C6', 'C7': 'C7'},
+        'y_col': 'Empleo', 'y_label': 'Empleo',
+    },
+    'remuneracion': {
+        'label': 'Remuneracion',
+        'has_nivel': False,
+        'dataset': 'R3',
+        'y_col': 'Remuneracion', 'y_label': 'Remuneracion promedio ($)',
+    },
+    'empresas': {
+        'label': 'Empresas',
+        'has_nivel': False,
+        'dataset': 'E2',
+        'y_col': 'Empresas', 'y_label': 'Cantidad de empresas',
+    },
+    'flujos': {
+        'label': 'Flujos (Creacion Neta)',
+        'has_nivel': False,
+        'dataset': 'F3',
+        'y_col': 'Creacion_Neta', 'y_label': 'Creacion neta de empleo',
+    },
+}
+
 
 def create_analisis_layout():
     """Layout de la tab Analisis con toggle de sub-vista."""
+    variable_options = [{'label': v['label'], 'value': k}
+                        for k, v in TEMPORAL_VARIABLES.items()]
+    fuente_options = [{'label': v['label'], 'value': k}
+                      for k, v in SECTORIAL_SOURCES.items()]
+
     return html.Div([
         # Toggle superior
         html.Div([
@@ -34,8 +141,18 @@ def create_analisis_layout():
             )
         ], className="mb-3 text-center"),
 
-        # Controles locales de metrica y serie base
+        # Controles temporales: Variable + Metrica + Serie base
         html.Div([
+            html.Div([
+                html.Label("Variable:", className="fw-bold me-2"),
+                dcc.Dropdown(
+                    id='analisis-variable',
+                    options=variable_options,
+                    value='empleo',
+                    clearable=False,
+                    style={'width': '220px'}
+                )
+            ], className="col-md-3"),
             html.Div([
                 html.Label("Metrica:", className="fw-bold me-2"),
                 dcc.RadioItems(
@@ -50,7 +167,7 @@ def create_analisis_layout():
                     inline=True,
                     className="mt-1"
                 )
-            ], className="col-md-6"),
+            ], className="col-md-5", id='analisis-metrica-wrapper'),
             html.Div([
                 html.Label("Serie base:", className="fw-bold me-2"),
                 dcc.RadioItems(
@@ -63,7 +180,7 @@ def create_analisis_layout():
                     inline=True,
                     className="mt-1"
                 )
-            ], className="col-md-6")
+            ], className="col-md-4", id='analisis-serie-base-wrapper')
         ], className="sipa-controls row", id='analisis-controles-metrica',
            style={'margin': '0 0 1rem 0'}),
 
@@ -73,15 +190,27 @@ def create_analisis_layout():
 
 
 def register_analisis_callbacks(app):
-    # Mostrar/ocultar controles de metrica segun sub-vista
+    # Mostrar/ocultar controles de metrica segun sub-vista y variable
     @app.callback(
-        Output('analisis-controles-metrica', 'style'),
-        Input('analisis-toggle', 'value')
+        [Output('analisis-controles-metrica', 'style'),
+         Output('analisis-metrica-wrapper', 'style'),
+         Output('analisis-serie-base-wrapper', 'style')],
+        [Input('analisis-toggle', 'value'),
+         Input('analisis-variable', 'value')]
     )
-    def toggle_metrica_controls(vista):
-        if vista == 'temporal':
-            return {'display': 'flex', 'margin': '0 0 1rem 0'}
-        return {'display': 'none'}
+    def toggle_metrica_controls(vista, variable):
+        if vista != 'temporal':
+            hidden = {'display': 'none'}
+            return hidden, hidden, hidden
+
+        show_row = {'display': 'flex', 'margin': '0 0 1rem 0'}
+        show = {}
+        hidden = {'display': 'none'}
+
+        cfg = TEMPORAL_VARIABLES.get(variable, {})
+        metrica_style = show if cfg.get('has_metrica', False) else hidden
+        serie_style = show if cfg.get('has_serie_base', False) else hidden
+        return show_row, metrica_style, serie_style
 
     # Contenido principal de analisis
     @app.callback(
@@ -89,12 +218,14 @@ def register_analisis_callbacks(app):
         [Input('analisis-toggle', 'value'),
          Input('analisis-metrica', 'value'),
          Input('analisis-serie-base', 'value'),
+         Input('analisis-variable', 'value'),
          Input('dd-fecha-desde', 'value'),
          Input('dd-fecha-hasta', 'value')]
     )
-    def update_analisis(vista, metrica, serie_base, fecha_desde, fecha_hasta):
+    def update_analisis(vista, metrica, serie_base, variable, fecha_desde, fecha_hasta):
         if vista == 'temporal':
-            return _render_temporal(metrica, serie_base, fecha_desde, fecha_hasta)
+            return _render_temporal(variable or 'empleo', metrica, serie_base,
+                                    fecha_desde, fecha_hasta)
         elif vista == 'sectorial':
             return _render_sectorial(fecha_desde, fecha_hasta)
         elif vista == 'tamaño':
@@ -102,76 +233,123 @@ def register_analisis_callbacks(app):
         return empty_state("Vista no disponible")
 
 
-def _render_temporal(metrica, serie_base, fecha_desde, fecha_hasta):
-    """Sub-vista temporal."""
-    if serie_base == 'desest':
-        c1 = cache.get('C1.2')
+def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta):
+    """Sub-vista temporal con selector de variable multi-fuente."""
+    cfg = TEMPORAL_VARIABLES.get(variable)
+    if not cfg:
+        return empty_state("Variable no reconocida")
+
+    # Load dataset
+    ds = cfg['dataset']
+    if isinstance(ds, dict):
+        # Empleo: pick estacional/desest
+        df = cache.get(ds.get(serie_base, ds.get('estacional')))
     else:
-        c1 = cache.get('C1.1')
+        df = cache.get(ds)
 
-    c1 = filter_by_dates(c1, fecha_desde, fecha_hasta)
+    df = filter_by_dates(df, fecha_desde, fecha_hasta)
 
-    if c1.empty:
+    if df.empty:
         return empty_state("No hay datos disponibles",
                            "Verifique el rango de fechas seleccionado")
 
-    # Seleccionar columna segun metrica
-    y_col_map = {
-        'var_trim': ('var_trim', 'Variacion trimestral (%)'),
-        'var_yoy': ('var_yoy', 'Variacion interanual (%)'),
-        'index': ('index_100', 'Indice base 100'),
-        'niveles': ('Empleo', 'Empleo (puestos de trabajo)')
-    }
-    y_col, y_title = y_col_map.get(metrica, ('Empleo', 'Empleo'))
+    # Determine y columns and title
+    multi_series = cfg.get('multi_series', False)
+    group_col = cfg.get('group_col')
+    y_label = cfg['y_label']
+
+    # For empleo with metrica
+    if cfg.get('has_metrica') and metrica != 'niveles':
+        y_col_map = {
+            'var_trim': ('var_trim', 'Variacion trimestral (%)'),
+            'var_yoy': ('var_yoy', 'Variacion interanual (%)'),
+            'index': ('index_100', 'Indice base 100'),
+        }
+        y_col, y_label = y_col_map.get(metrica, (cfg['y_col'], y_label))
+    else:
+        y_col = cfg['y_col']
 
     fig = go.Figure()
-    if y_col in c1.columns:
-        fig.add_trace(go.Scatter(
-            x=c1['Date'], y=c1[y_col],
-            mode='lines+markers',
-            name='Empleo total',
-            line=dict(color=COLORS['primary_light'], width=2),
-            marker=dict(size=4)
-        ))
+    colors = PLOTLY_TEMPLATE['layout']['colorway']
 
-        # Promedio movil
-        c1['MA4'] = c1[y_col].rolling(window=4, min_periods=1).mean()
-        fig.add_trace(go.Scatter(
-            x=c1['Date'], y=c1['MA4'],
-            mode='lines',
-            name='Promedio movil (4T)',
-            line=dict(color=COLORS['warning'], width=2, dash='dash')
-        ))
+    if multi_series:
+        # Multiple columns on same dataset (e.g. Tasas)
+        series_names = cfg.get('series_names', y_col)
+        for i, (col, name) in enumerate(zip(y_col, series_names)):
+            if col in df.columns:
+                fig.add_trace(go.Scatter(
+                    x=df['Date'], y=df[col],
+                    mode='lines+markers', name=name,
+                    line=dict(color=colors[i % len(colors)], width=2),
+                    marker=dict(size=4)
+                ))
+    elif group_col:
+        # Grouped data (e.g. Genero)
+        groups = df[group_col].unique()
+        for i, grp in enumerate(groups):
+            df_g = df[df[group_col] == grp]
+            fig.add_trace(go.Scatter(
+                x=df_g['Date'], y=df_g[y_col],
+                mode='lines+markers', name=str(grp),
+                line=dict(color=colors[i % len(colors)], width=2),
+                marker=dict(size=4)
+            ))
+    else:
+        # Single series
+        if isinstance(y_col, str) and y_col in df.columns:
+            fig.add_trace(go.Scatter(
+                x=df['Date'], y=df[y_col],
+                mode='lines+markers',
+                name=cfg['label'],
+                line=dict(color=COLORS['primary_light'], width=2),
+                marker=dict(size=4)
+            ))
+
+            # Moving average (adapt window to frequency)
+            ma_window = 4 if cfg.get('unit') != '$' else 6
+            df['_MA'] = df[y_col].rolling(window=ma_window, min_periods=1).mean()
+            ma_label = f'Promedio movil ({ma_window})'
+            fig.add_trace(go.Scatter(
+                x=df['Date'], y=df['_MA'],
+                mode='lines', name=ma_label,
+                line=dict(color=COLORS['warning'], width=2, dash='dash')
+            ))
 
     fig.update_layout(
-        title=f'Evolucion temporal - {y_title}',
+        title=f'Evolucion temporal - {y_label}',
         xaxis_title='Periodo',
-        yaxis_title=y_title,
+        yaxis_title=y_label,
         hovermode='x unified',
         showlegend=True,
         height=500
     )
     fig.update_layout(**PLOTLY_TEMPLATE['layout'])
 
-    # Estadisticas resumen
+    # Summary stats
     stats_children = []
-    if y_col in c1.columns and not c1[y_col].dropna().empty:
-        stats = c1[y_col].describe()
-        stats_children = [
-            html.Div([
-                html.H6("Estadisticas del periodo seleccionado",
-                         style={'marginBottom': '0.5rem', 'fontWeight': '600'}),
+    if not multi_series and not group_col:
+        stat_col = y_col if isinstance(y_col, str) else y_col[0]
+        if stat_col in df.columns and not df[stat_col].dropna().empty:
+            stats = df[stat_col].describe()
+            stats_children = [
                 html.Div([
-                    html.Span(f"Min: {stats['min']:,.1f}", className="sipa-badge sipa-badge-info me-2"),
-                    html.Span(f"Max: {stats['max']:,.1f}", className="sipa-badge sipa-badge-info me-2"),
-                    html.Span(f"Media: {stats['mean']:,.1f}", className="sipa-badge sipa-badge-info me-2"),
-                    html.Span(f"Obs: {int(stats['count'])}", className="sipa-badge sipa-badge-info"),
-                ])
-            ], className="sipa-controls", style={'marginTop': '1rem'})
-        ]
+                    html.H6("Estadisticas del periodo seleccionado",
+                             style={'marginBottom': '0.5rem', 'fontWeight': '600'}),
+                    html.Div([
+                        html.Span(f"Min: {stats['min']:,.1f}",
+                                  className="sipa-badge sipa-badge-info me-2"),
+                        html.Span(f"Max: {stats['max']:,.1f}",
+                                  className="sipa-badge sipa-badge-info me-2"),
+                        html.Span(f"Media: {stats['mean']:,.1f}",
+                                  className="sipa-badge sipa-badge-info me-2"),
+                        html.Span(f"Obs: {int(stats['count'])}",
+                                  className="sipa-badge sipa-badge-info"),
+                    ])
+                ], className="sipa-controls", style={'marginTop': '1rem'})
+            ]
 
     return html.Div([
-        create_section_card(f"Serie Temporal - {y_title}", [
+        create_section_card(f"Serie Temporal - {y_label}", [
             dcc.Graph(id='analisis-temporal-chart', figure=fig),
         ]),
         html.Div(stats_children)
@@ -179,9 +357,22 @@ def _render_temporal(metrica, serie_base, fecha_desde, fecha_hasta):
 
 
 def _render_sectorial(fecha_desde, fecha_hasta):
-    """Sub-vista sectorial (CIIU)."""
+    """Sub-vista sectorial (CIIU) con selector de fuente."""
+    fuente_options = [{'label': v['label'], 'value': k}
+                      for k, v in SECTORIAL_SOURCES.items()]
+
     return html.Div([
         html.Div([
+            html.Div([
+                html.Label("Fuente:", className="me-2"),
+                dcc.Dropdown(
+                    id='analisis-fuente-sectorial',
+                    options=fuente_options,
+                    value='empleo',
+                    clearable=False,
+                    style={'width': '250px'}
+                )
+            ], className="col-md-3"),
             html.Div([
                 html.Label("Nivel CIIU:", className="me-2"),
                 dcc.Dropdown(
@@ -195,7 +386,7 @@ def _render_sectorial(fecha_desde, fecha_hasta):
                     value='C4',
                     style={'width': '300px'}
                 )
-            ], className="col-md-4"),
+            ], className="col-md-3", id='dd-nivel-ciiu-wrapper'),
             html.Div([
                 html.Label("Codigos:", className="me-2"),
                 dcc.Dropdown(
@@ -203,7 +394,7 @@ def _render_sectorial(fecha_desde, fecha_hasta):
                     multi=True,
                     placeholder="Buscar por codigo o descripcion..."
                 )
-            ], className="col-md-6"),
+            ], className="col-md-4"),
             html.Div([
                 dcc.Checklist(
                     id='check-top-n',
@@ -216,7 +407,7 @@ def _render_sectorial(fecha_desde, fecha_hasta):
 
         html.Div([
             html.Div([
-                create_section_card("Empleo por Sector (ultimo periodo)", [
+                create_section_card("Dato por Sector (ultimo periodo)", [
                     dcc.Graph(id='bars-ultimo', style={'height': '400px'})
                 ])
             ], className="col-md-6"),
@@ -282,25 +473,49 @@ def _render_tamaño(fecha_desde, fecha_hasta):
     ])
 
 
+def _get_sector_label(sector_code):
+    """Map sector CIIU letter code to human-readable label."""
+    return SECTOR_CIIU_LETRA.get(str(sector_code), str(sector_code))
+
+
 def register_sectorial_callbacks(app):
     """Callbacks para la sub-vista sectorial."""
 
+    # Show/hide nivel CIIU based on fuente
+    @app.callback(
+        Output('dd-nivel-ciiu-wrapper', 'style'),
+        Input('analisis-fuente-sectorial', 'value')
+    )
+    def toggle_nivel_ciiu(fuente):
+        cfg = SECTORIAL_SOURCES.get(fuente, {})
+        if cfg.get('has_nivel', False):
+            return {}
+        return {'display': 'none'}
+
     @app.callback(
         Output('dd-codigos-sectorial', 'options'),
-        Input('dd-nivel-ciiu', 'value')
+        [Input('dd-nivel-ciiu', 'value'),
+         Input('analisis-fuente-sectorial', 'value')]
     )
-    def update_codigo_options(nivel_ciiu):
-        if not nivel_ciiu:
-            return []
-        desc_df = cache.get_ref('descriptores_CIIU')
-        if desc_df.empty:
-            return []
-        desc_filtered = desc_df[desc_df['Tabla'] == nivel_ciiu]
-        options = []
-        for _, row in desc_filtered.iterrows():
-            label = f"{row['Código']} - {str(row['Descripción'])[:50]}..."
-            options.append({'label': label, 'value': row['Código']})
-        return options
+    def update_codigo_options(nivel_ciiu, fuente):
+        cfg = SECTORIAL_SOURCES.get(fuente, {})
+        if cfg.get('has_nivel', False):
+            # Empleo: use descriptores for selected CIIU level
+            if not nivel_ciiu:
+                return []
+            desc_df = cache.get_ref('descriptores_CIIU')
+            if desc_df.empty:
+                return []
+            desc_filtered = desc_df[desc_df['Tabla'] == nivel_ciiu]
+            options = []
+            for _, row in desc_filtered.iterrows():
+                label = f"{row['Código']} - {str(row['Descripción'])[:50]}..."
+                options.append({'label': label, 'value': row['Código']})
+            return options
+        else:
+            # Non-empleo sources: CIIU letter sectors
+            return [{'label': f"{k} - {v}", 'value': k}
+                    for k, v in SECTOR_CIIU_LETRA.items()]
 
     @app.callback(
         [Output('bars-ultimo', 'figure'),
@@ -309,119 +524,178 @@ def register_sectorial_callbacks(app):
         [Input('dd-nivel-ciiu', 'value'),
          Input('dd-codigos-sectorial', 'value'),
          Input('check-top-n', 'value'),
+         Input('analisis-fuente-sectorial', 'value'),
          Input('dd-fecha-desde', 'value'),
          Input('dd-fecha-hasta', 'value')]
     )
-    def update_sectorial_charts(nivel_ciiu, codigos, top_n, fecha_desde, fecha_hasta):
-        if not nivel_ciiu:
-            fig_empty = go.Figure()
-            fig_empty.add_annotation(text="Seleccione un nivel CIIU",
-                                     xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
-            fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
-            return fig_empty, fig_empty, empty_state("Seleccione parametros")
+    def update_sectorial_charts(nivel_ciiu, codigos, top_n, fuente,
+                                fecha_desde, fecha_hasta):
+        cfg = SECTORIAL_SOURCES.get(fuente or 'empleo', SECTORIAL_SOURCES['empleo'])
+        y_col = cfg['y_col']
+        y_label = cfg['y_label']
 
-        df = cache.get(nivel_ciiu)
+        # Determine which dataset to load
+        if cfg.get('has_nivel', False):
+            # Empleo: use selected CIIU level
+            if not nivel_ciiu:
+                fig_empty = go.Figure()
+                fig_empty.add_annotation(text="Seleccione un nivel CIIU",
+                                         xref="paper", yref="paper",
+                                         x=0.5, y=0.5, showarrow=False)
+                fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
+                return fig_empty, fig_empty, empty_state("Seleccione parametros")
+            dataset_key = cfg['datasets'].get(nivel_ciiu, 'C3')
+            source_label = nivel_ciiu
+        else:
+            dataset_key = cfg['dataset']
+            nivel_ciiu = None  # no level selector for non-empleo
+            source_label = cfg['label']
+
+        df = cache.get(dataset_key)
         df = filter_by_dates(df, fecha_desde, fecha_hasta)
         if df.empty:
             fig_empty = go.Figure()
-            fig_empty.add_annotation(text=f"No hay datos para {nivel_ciiu}",
-                                     xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
+            fig_empty.add_annotation(text=f"No hay datos para {source_label}",
+                                     xref="paper", yref="paper",
+                                     x=0.5, y=0.5, showarrow=False)
             fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
-            return fig_empty, fig_empty, empty_state(f"No hay datos para {nivel_ciiu}")
+            return fig_empty, fig_empty, empty_state(f"No hay datos para {source_label}")
 
-        # Filtrar por codigos
+        # Check that y_col exists
+        if y_col not in df.columns:
+            fig_empty = go.Figure()
+            fig_empty.add_annotation(
+                text=f"Columna '{y_col}' no encontrada en {dataset_key}",
+                xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
+            fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
+            return fig_empty, fig_empty, empty_state(
+                f"Datos no disponibles",
+                f"El dataset {dataset_key} no contiene la columna esperada")
+
+        # Filter by selected codes
         if codigos:
             df = df[df['Sector'].isin(codigos)]
             if df.empty:
                 fig_empty = go.Figure()
-                fig_empty.add_annotation(text="Los codigos seleccionados no tienen datos",
-                                         xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
+                fig_empty.add_annotation(
+                    text="Los codigos seleccionados no tienen datos",
+                    xref="paper", yref="paper", x=0.5, y=0.5, showarrow=False)
                 fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
                 return fig_empty, fig_empty, empty_state(
                     "No hay datos historicos",
                     "Los codigos seleccionados pueden ser actividades nuevas o de baja representatividad")
         elif top_n and 'show' in top_n:
             ultimo_periodo = get_latest_period_str(df) or df['Período'].iloc[-1]
-            df_ultimo = df[df['Período'] == ultimo_periodo].nlargest(10, 'Empleo')
+            df_ultimo = df[df['Período'] == ultimo_periodo].nlargest(10, y_col)
             sectores_top = df_ultimo['Sector'].tolist()
             df = df[df['Sector'].isin(sectores_top)]
 
         if df.empty:
             fig_empty = go.Figure()
             fig_empty.update_layout(**PLOTLY_TEMPLATE['layout'])
-            return fig_empty, fig_empty, empty_state("No hay datos con los filtros seleccionados")
+            return fig_empty, fig_empty, empty_state(
+                "No hay datos con los filtros seleccionados")
 
-        # Barras del ultimo periodo
+        # Bar chart - last period
         ultimo_periodo = get_latest_period_str(df) or df['Período'].iloc[-1]
-        df_ultimo = df[df['Período'] == ultimo_periodo].sort_values('Empleo', ascending=True)
+        df_ultimo = df[df['Período'] == ultimo_periodo].sort_values(
+            y_col, ascending=True)
+
+        # Add readable labels for CIIU letter codes in non-empleo sources
+        use_sector_labels = not cfg.get('has_nivel', False)
+        if use_sector_labels:
+            df_ultimo = df_ultimo.copy()
+            df_ultimo['Sector_Label'] = df_ultimo['Sector'].apply(_get_sector_label)
+            bar_y = 'Sector_Label'
+        else:
+            bar_y = 'Sector'
 
         fig_bars = px.bar(
-            df_ultimo, x='Empleo', y='Sector', orientation='h',
-            title=f'Empleo por sector - {ultimo_periodo}',
-            color='Empleo', color_continuous_scale='Blues'
+            df_ultimo, x=y_col, y=bar_y, orientation='h',
+            title=f'{y_label} por sector - {ultimo_periodo}',
+            color=y_col, color_continuous_scale='Blues'
         )
         fig_bars.update_layout(**PLOTLY_TEMPLATE['layout'])
 
-        # Serie temporal
+        # Time series
         fig_ts = go.Figure()
         for sector in df['Sector'].unique()[:10]:
             df_sector = df[df['Sector'] == sector]
+            x_vals = df_sector['Date'] if 'Date' in df_sector.columns else df_sector['Período']
+            label = _get_sector_label(sector) if use_sector_labels else str(sector)
             fig_ts.add_trace(go.Scatter(
-                x=df_sector['Date'] if 'Date' in df_sector.columns else df_sector['Período'],
-                y=df_sector['Empleo'],
-                mode='lines+markers', name=str(sector),
+                x=x_vals, y=df_sector[y_col],
+                mode='lines+markers', name=label,
                 marker=dict(size=4)
             ))
-        fig_ts.update_layout(title='Evolucion temporal por sector',
-                             xaxis_title='Periodo', yaxis_title='Empleo',
+        fig_ts.update_layout(title=f'Evolucion temporal - {y_label}',
+                             xaxis_title='Periodo', yaxis_title=y_label,
                              hovermode='x unified')
         fig_ts.update_layout(**PLOTLY_TEMPLATE['layout'])
 
-        # Tabla con descriptores
-        desc_df = cache.get_ref('descriptores_CIIU')
-        desc_dict = {}
-        if not desc_df.empty:
-            desc_filtered = desc_df[desc_df['Tabla'] == nivel_ciiu]
-            for _, row in desc_filtered.iterrows():
-                codigo_str = str(row['Código']).strip()
-                try:
-                    if nivel_ciiu in ['C4', 'C6', 'C7']:
-                        codigo_str = str(int(float(codigo_str)))
-                except Exception:
-                    pass
-                desc_dict[codigo_str] = row['Descripción']
-
+        # Detail table
         df_ultimo_e = df_ultimo.copy()
-        df_ultimo_e['Descripción'] = df_ultimo_e['Sector'].apply(
-            lambda x: str(desc_dict.get(str(x).strip(),
-                          desc_dict.get(str(int(float(x))) if str(x).replace('.', '').isdigit() else x,
-                                        'Sin descripcion')))[:50]
-        )
+        desc_col_name = 'Descripción'
 
-        tabla_container = create_section_card(f"Detalle {nivel_ciiu} - {ultimo_periodo}", [
-            html.Small(f"Mostrando {len(df_ultimo)} sectores",
-                       style={'color': '#718096', 'display': 'block', 'marginBottom': '0.5rem'}),
-            dash_table.DataTable(
-                data=df_ultimo_e.to_dict('records'),
-                columns=[
-                    {'name': 'Codigo', 'id': 'Sector'},
-                    {'name': 'Descripcion', 'id': 'Descripción'},
-                    {'name': 'Empleo', 'id': 'Empleo', 'type': 'numeric', 'format': {'specifier': ',.0f'}}
-                ],
-                style_cell={'textAlign': 'left', 'padding': '8px', 'fontSize': '0.85rem'},
-                style_header={
-                    'backgroundColor': '#1B2A4A',
-                    'color': 'white',
-                    'fontWeight': '600',
-                    'padding': '10px 8px'
-                },
-                style_data_conditional=[
-                    {'if': {'row_index': 'odd'}, 'backgroundColor': '#F7FAFC'}
-                ],
-                sort_action="native",
-                page_size=15
+        if cfg.get('has_nivel', False) and nivel_ciiu:
+            # Empleo: use descriptores_CIIU
+            desc_df = cache.get_ref('descriptores_CIIU')
+            desc_dict = {}
+            if not desc_df.empty:
+                desc_filtered = desc_df[desc_df['Tabla'] == nivel_ciiu]
+                for _, row in desc_filtered.iterrows():
+                    codigo_str = str(row['Código']).strip()
+                    try:
+                        if nivel_ciiu in ['C4', 'C6', 'C7']:
+                            codigo_str = str(int(float(codigo_str)))
+                    except Exception:
+                        pass
+                    desc_dict[codigo_str] = row['Descripción']
+
+            df_ultimo_e[desc_col_name] = df_ultimo_e['Sector'].apply(
+                lambda x: str(desc_dict.get(
+                    str(x).strip(),
+                    desc_dict.get(
+                        str(int(float(x))) if str(x).replace('.', '').isdigit() else x,
+                        'Sin descripcion')))[:50]
             )
-        ])
+        else:
+            # Non-empleo: CIIU letter -> description
+            df_ultimo_e[desc_col_name] = df_ultimo_e['Sector'].apply(
+                lambda x: SECTOR_CIIU_LETRA.get(str(x), str(x))
+            )
+
+        tabla_columns = [
+            {'name': 'Codigo', 'id': 'Sector'},
+            {'name': 'Descripcion', 'id': desc_col_name},
+            {'name': y_label, 'id': y_col, 'type': 'numeric',
+             'format': {'specifier': ',.0f'}}
+        ]
+
+        tabla_container = create_section_card(
+            f"Detalle {source_label} - {ultimo_periodo}", [
+                html.Small(f"Mostrando {len(df_ultimo)} sectores",
+                           style={'color': '#718096', 'display': 'block',
+                                  'marginBottom': '0.5rem'}),
+                dash_table.DataTable(
+                    data=df_ultimo_e.to_dict('records'),
+                    columns=tabla_columns,
+                    style_cell={'textAlign': 'left', 'padding': '8px',
+                                'fontSize': '0.85rem'},
+                    style_header={
+                        'backgroundColor': '#1B2A4A',
+                        'color': 'white',
+                        'fontWeight': '600',
+                        'padding': '10px 8px'
+                    },
+                    style_data_conditional=[
+                        {'if': {'row_index': 'odd'},
+                         'backgroundColor': '#F7FAFC'}
+                    ],
+                    sort_action="native",
+                    page_size=15
+                )
+            ])
 
         return fig_bars, fig_ts, tabla_container
 
@@ -498,9 +772,11 @@ def register_tamaño_callbacks(app):
             data=df_tabla.to_dict('records'),
             columns=[
                 {'name': 'Categoria', 'id': 'Sector'},
-                {'name': 'Empleo', 'id': 'Empleo', 'type': 'numeric', 'format': {'specifier': ',.0f'}}
+                {'name': 'Empleo', 'id': 'Empleo', 'type': 'numeric',
+                 'format': {'specifier': ',.0f'}}
             ],
-            style_cell={'textAlign': 'left', 'padding': '8px', 'fontSize': '0.85rem'},
+            style_cell={'textAlign': 'left', 'padding': '8px',
+                        'fontSize': '0.85rem'},
             style_header={
                 'backgroundColor': '#1B2A4A',
                 'color': 'white',
