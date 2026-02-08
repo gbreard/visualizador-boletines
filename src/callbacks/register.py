@@ -8,6 +8,10 @@ from src.tabs.analisis import register_analisis_callbacks, register_sectorial_ca
 from src.tabs.comparaciones import register_comparaciones_callbacks
 from src.tabs.alertas import register_alertas_callbacks
 from src.tabs.datos import register_datos_callbacks
+from src.tabs.remuneraciones import register_remuneraciones_callbacks
+from src.tabs.empresas import register_empresas_callbacks
+from src.tabs.flujos import register_flujos_callbacks
+from src.tabs.genero import register_genero_callbacks
 
 
 def register_all_callbacks(app):
@@ -20,3 +24,7 @@ def register_all_callbacks(app):
     register_comparaciones_callbacks(app)
     register_alertas_callbacks(app)
     register_datos_callbacks(app)
+    register_remuneraciones_callbacks(app)
+    register_empresas_callbacks(app)
+    register_flujos_callbacks(app)
+    register_genero_callbacks(app)

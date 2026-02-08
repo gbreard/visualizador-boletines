@@ -8,10 +8,11 @@ from src.config import COLORS
 
 
 def create_kpi_card(title, value, subtitle="", color="primary", id_prefix="kpi",
-                    trend=None):
+                    trend=None, is_pct=False):
     """
     Crea una tarjeta KPI con estilo institucional.
     trend: 'up', 'down', o None para mostrar flecha de tendencia.
+    is_pct: True para formatear como porcentaje (ej: "3.50%").
     """
     value_color = COLORS.get(color, COLORS['primary'])
 
@@ -22,10 +23,10 @@ def create_kpi_card(title, value, subtitle="", color="primary", id_prefix="kpi",
             value_color = COLORS['danger']
 
     # Formatear valor
-    if isinstance(value, (int, float)) and abs(value) > 100:
-        formatted = f"{value:,.0f}"
-    elif isinstance(value, (int, float)):
+    if is_pct and isinstance(value, (int, float)):
         formatted = f"{value:.2f}%"
+    elif isinstance(value, (int, float)):
+        formatted = f"{value:,.0f}"
     else:
         formatted = str(value)
 

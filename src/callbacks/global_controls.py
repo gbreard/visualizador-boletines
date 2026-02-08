@@ -10,6 +10,10 @@ from src.tabs.comparaciones import create_comparaciones_layout
 from src.tabs.alertas import create_alertas_layout
 from src.tabs.datos import create_datos_layout
 from src.tabs.metodologia import create_metodologia_layout
+from src.tabs.remuneraciones import create_remuneraciones_layout
+from src.tabs.empresas import create_empresas_layout
+from src.tabs.flujos import create_flujos_layout
+from src.tabs.genero import create_genero_layout
 
 
 def register_global_callbacks(app):
@@ -25,6 +29,14 @@ def register_global_callbacks(app):
             return create_resumen_layout()
         elif active_tab == 'tab-analisis':
             return create_analisis_layout()
+        elif active_tab == 'tab-remuneraciones':
+            return create_remuneraciones_layout()
+        elif active_tab == 'tab-empresas':
+            return create_empresas_layout()
+        elif active_tab == 'tab-flujos':
+            return create_flujos_layout()
+        elif active_tab == 'tab-genero':
+            return create_genero_layout()
         elif active_tab == 'tab-comparaciones':
             return create_comparaciones_layout()
         elif active_tab == 'tab-alertas':

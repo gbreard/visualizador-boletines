@@ -54,10 +54,14 @@ def create_main_layout():
             ], className="row")
         ], className="sipa-controls"),
 
-        # Tabs: 6 tabs
+        # Tabs: 10 tabs (empleo + remuneraciones + empresas + flujos + genero + utils)
         dcc.Tabs(id='tabs-main', value='tab-resumen', children=[
             dcc.Tab(label='Resumen', value='tab-resumen'),
             dcc.Tab(label='Analisis', value='tab-analisis'),
+            dcc.Tab(label='Remuneraciones', value='tab-remuneraciones'),
+            dcc.Tab(label='Empresas', value='tab-empresas'),
+            dcc.Tab(label='Flujos', value='tab-flujos'),
+            dcc.Tab(label='Genero', value='tab-genero'),
             dcc.Tab(label='Comparaciones', value='tab-comparaciones'),
             dcc.Tab(label='Alertas', value='tab-alertas'),
             dcc.Tab(label='Datos', value='tab-datos'),

@@ -106,10 +106,43 @@ PARQUET_MAPPING = {
     'C5': 'c5.parquet',
     'C6': 'c6.parquet',
     'C7': 'c7.parquet',
-    'descriptores_CIIU': 'descriptores.parquet'
+    'descriptores_CIIU': 'descriptores.parquet',
+    # Remuneraciones
+    'R1': 'r1.parquet',
+    'R2': 'r2.parquet',
+    'R3': 'r3.parquet',
+    'R4': 'r4.parquet',
+    'descriptores_remuneraciones': 'descriptores_remuneraciones.parquet',
+    # Empresas
+    'E1': 'e1.parquet',
+    'E2': 'e2.parquet',
+    'E3': 'e3.parquet',
+    # Flujos
+    'F1': 'f1.parquet',
+    'F2': 'f2.parquet',
+    'F3': 'f3.parquet',
+    # Genero
+    'G1': 'g1.parquet',
+    'G2': 'g2.parquet',
+    'G3': 'g3.parquet',
 }
 
-ALL_DATASET_KEYS = ['C1.1', 'C1.2', 'C2.1', 'C2.2', 'C3', 'C4', 'C5', 'C6', 'C7', 'descriptores_CIIU']
+# Datasets de empleo trimestral (fuente original)
+EMPLEO_KEYS = ['C1.1', 'C1.2', 'C2.1', 'C2.2', 'C3', 'C4', 'C5', 'C6', 'C7', 'descriptores_CIIU']
+
+# Datasets de remuneraciones
+REMUNERACIONES_KEYS = ['R1', 'R2', 'R3', 'R4', 'descriptores_remuneraciones']
+
+# Datasets de empresas
+EMPRESAS_KEYS = ['E1', 'E2', 'E3']
+
+# Datasets de flujos de empleo
+FLUJOS_KEYS = ['F1', 'F2', 'F3']
+
+# Datasets de genero
+GENERO_KEYS = ['G1', 'G2', 'G3']
+
+ALL_DATASET_KEYS = EMPLEO_KEYS + REMUNERACIONES_KEYS + EMPRESAS_KEYS + FLUJOS_KEYS + GENERO_KEYS
 
 DATASET_LABELS = {
     'C1.1': 'C1.1 - Serie temporal con estacionalidad',
@@ -121,7 +154,39 @@ DATASET_LABELS = {
     'C5': 'C5 - Por sector y tamano',
     'C6': 'C6 - Por 3 digitos CIIU',
     'C7': 'C7 - Por 4 digitos CIIU',
-    'descriptores_CIIU': 'Descriptores CIIU'
+    'descriptores_CIIU': 'Descriptores CIIU',
+    'R1': 'R1 - Remuneracion promedio total',
+    'R2': 'R2 - Remuneracion mediana total',
+    'R3': 'R3 - Remuneracion promedio por sector',
+    'R4': 'R4 - Remuneracion mediana por sector',
+    'descriptores_remuneraciones': 'Descriptores CIIU (Remuneraciones)',
+    'E1': 'E1 - Total empresas',
+    'E2': 'E2 - Empresas por sector',
+    'E3': 'E3 - Empresas por tamano',
+    'F1': 'F1 - Flujos totales (altas/bajas)',
+    'F2': 'F2 - Tasas de rotacion',
+    'F3': 'F3 - Flujos por sector',
+    'G1': 'G1 - Empleo por genero total',
+    'G2': 'G2 - Brecha salarial por genero',
+    'G3': 'G3 - Empleo por genero y sector',
+}
+
+# Mapeo de sector CIIU letra a descripcion (para remuneraciones)
+SECTOR_CIIU_LETRA = {
+    'A': 'Agricultura, ganaderia y pesca',
+    'B': 'Mineria y petroleo',
+    'C': 'Industria',
+    'D': 'Electricidad, gas y agua',
+    'E': 'Construccion',
+    'F': 'Comercio',
+    'G': 'Hoteleria y restaurantes',
+    'H': 'Transporte y comunicaciones',
+    'I': 'Serv. financieros',
+    'J': 'Serv. inmobiliarios',
+    'K': 'Adm. publica y defensa',
+    'M': 'Ensenanza',
+    'N': 'Serv. sociales y de salud',
+    'O': 'Otros servicios',
 }
 
 # Descripciones expandidas para tab Datos
@@ -185,5 +250,89 @@ DATASET_DESCRIPTIONS = {
         'description': 'Tabla maestra de codigos y descripciones de la Clasificacion Industrial Internacional Uniforme. Vincula codigos numericos con nombres de actividades.',
         'columns': 'Tabla, Codigo, Descripcion',
         'frequency': 'Referencia estatica',
+    },
+    'R1': {
+        'title': 'Remuneracion Promedio Total',
+        'description': 'Remuneracion promedio por todo concepto de los trabajadores registrados del sector privado. Serie original a valores corrientes.',
+        'columns': 'Periodo, Remuneracion',
+        'frequency': 'Mensual',
+    },
+    'R2': {
+        'title': 'Remuneracion Mediana Total',
+        'description': 'Remuneracion mediana por todo concepto de los trabajadores registrados del sector privado.',
+        'columns': 'Periodo, Remuneracion',
+        'frequency': 'Mensual',
+    },
+    'R3': {
+        'title': 'Remuneracion Promedio por Sector',
+        'description': 'Remuneracion promedio por sector de actividad economica (nivel letra CIIU). Serie original a valores corrientes.',
+        'columns': 'Periodo, Sector, Remuneracion',
+        'frequency': 'Mensual',
+    },
+    'R4': {
+        'title': 'Remuneracion Mediana por Sector',
+        'description': 'Remuneracion mediana por sector de actividad economica (nivel letra CIIU).',
+        'columns': 'Periodo, Sector, Remuneracion',
+        'frequency': 'Mensual',
+    },
+    'descriptores_remuneraciones': {
+        'title': 'Descriptores CIIU (Remuneraciones)',
+        'description': 'Tabla de codigos CIIU para las tablas de remuneraciones (2, 3 y 4 digitos).',
+        'columns': 'Codigo, Descripcion',
+        'frequency': 'Referencia estatica',
+    },
+    'E1': {
+        'title': 'Total de Empresas',
+        'description': 'Cantidad total de empresas registradas del sector privado.',
+        'columns': 'Periodo, Empresas',
+        'frequency': 'Anual',
+    },
+    'E2': {
+        'title': 'Empresas por Sector',
+        'description': 'Cantidad de empresas por sector de actividad economica.',
+        'columns': 'Periodo, Sector, Empresas',
+        'frequency': 'Anual',
+    },
+    'E3': {
+        'title': 'Empresas por Tamano',
+        'description': 'Cantidad de empresas por tamano (micro, pequena, mediana, grande).',
+        'columns': 'Periodo, Tamano, Empresas',
+        'frequency': 'Anual',
+    },
+    'F1': {
+        'title': 'Flujos de Empleo Total',
+        'description': 'Altas, bajas y creacion neta de puestos de trabajo del sector privado.',
+        'columns': 'Periodo, Altas, Bajas, Creacion_Neta',
+        'frequency': 'Trimestral',
+    },
+    'F2': {
+        'title': 'Tasas de Rotacion',
+        'description': 'Tasas de entrada, salida y rotacion laboral del sector privado.',
+        'columns': 'Periodo, Tasa_Entrada, Tasa_Salida, Tasa_Rotacion',
+        'frequency': 'Trimestral',
+    },
+    'F3': {
+        'title': 'Flujos por Sector',
+        'description': 'Flujos de empleo por sector de actividad economica.',
+        'columns': 'Periodo, Sector, Altas, Bajas',
+        'frequency': 'Trimestral',
+    },
+    'G1': {
+        'title': 'Empleo por Genero',
+        'description': 'Empleo registrado del sector privado desagregado por sexo.',
+        'columns': 'Periodo, Sexo, Empleo',
+        'frequency': 'Trimestral',
+    },
+    'G2': {
+        'title': 'Brecha Salarial por Genero',
+        'description': 'Remuneraciones por sexo y brecha salarial de genero.',
+        'columns': 'Periodo, Sexo, Remuneracion, Brecha',
+        'frequency': 'Trimestral',
+    },
+    'G3': {
+        'title': 'Empleo por Genero y Sector',
+        'description': 'Empleo por sexo desagregado por sector de actividad economica.',
+        'columns': 'Periodo, Sexo, Sector, Empleo',
+        'frequency': 'Trimestral',
     },
 }

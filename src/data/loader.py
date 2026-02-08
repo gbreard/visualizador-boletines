@@ -1,5 +1,6 @@
 """
 Carga de datos desde archivos locales o base de datos.
+Soporta multiples fuentes: empleo, remuneraciones, empresas, flujos, genero.
 """
 
 import os
@@ -10,6 +11,30 @@ from src.data.processing import process_periods, calculate_variations
 
 logger = logging.getLogger(__name__)
 
+# Datasets que requieren calculo de variaciones (tienen columna Empleo)
+VARIATION_KEYS = {'C1.1', 'C1.2', 'C2.1', 'C2.2', 'C3', 'C4', 'C5', 'C6', 'C7'}
+
+
+def _load_single_file(key):
+    """Carga un dataset individual desde Parquet o CSV. Retorna None si no existe."""
+    parquet_file = PARQUET_MAPPING.get(key)
+    parquet_path = os.path.join(OPTIMIZED_DIR, parquet_file) if parquet_file else None
+    csv_path = os.path.join(DATA_DIR, f'{key}.csv')
+
+    if parquet_path and os.path.exists(parquet_path):
+        df = pd.read_parquet(parquet_path)
+        for col in df.columns:
+            if hasattr(df[col], 'cat'):
+                df[col] = df[col].astype(df[col].cat.categories.dtype)
+        logger.info(f"  {key}: {len(df)} registros desde Parquet")
+        return df
+    elif os.path.exists(csv_path):
+        df = pd.read_csv(csv_path)
+        logger.info(f"  {key}: {len(df)} registros desde CSV")
+        return df
+
+    return None
+
 
 def load_from_files():
     """Carga todos los datos desde Parquet (si existe) o CSV."""
@@ -17,32 +42,23 @@ def load_from_files():
     data = {}
 
     for key in ALL_DATASET_KEYS:
-        parquet_file = PARQUET_MAPPING.get(key)
-        parquet_path = os.path.join(OPTIMIZED_DIR, parquet_file) if parquet_file else None
-        csv_path = os.path.join(DATA_DIR, f'{key}.csv')
-
-        if parquet_path and os.path.exists(parquet_path):
-            df = pd.read_parquet(parquet_path)
-            # Convertir columnas Categorical a tipos base (Parquet las optimiza como cat)
-            for col in df.columns:
-                if hasattr(df[col], 'cat'):
-                    df[col] = df[col].astype(df[col].cat.categories.dtype)
-            logger.info(f"  {key}: {len(df)} registros desde Parquet")
-        elif os.path.exists(csv_path):
-            df = pd.read_csv(csv_path)
-            logger.info(f"  {key}: {len(df)} registros desde CSV")
-        else:
-            logger.warning(f"  {key}: No se encontro archivo")
+        df = _load_single_file(key)
+        if df is None:
+            # Solo advertir si es un dataset de empleo (obligatorios)
+            if key.startswith('C') or key == 'descriptores_CIIU':
+                logger.warning(f"  {key}: No se encontro archivo")
             continue
 
         if 'Período' in df.columns:
             df = process_periods(df)
 
-        if key in ['C1.1', 'C1.2', 'C2.1', 'C2.2', 'C3', 'C4', 'C5', 'C6', 'C7']:
+        if key in VARIATION_KEYS:
             df = calculate_variations(df)
 
         data[key] = df
 
+    loaded = [k for k in data.keys()]
+    logger.info(f"Datasets cargados: {len(loaded)} ({', '.join(loaded)})")
     return data
 
 
