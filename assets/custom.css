@@ -1,0 +1,411 @@
+/* ============================================================
+   SIPA Dashboard - Estilo Institucional
+   Gobierno / Institucional: azul oscuro, gris, formal, confiable
+   ============================================================ */
+
+:root {
+    --sipa-primary: #1B2A4A;
+    --sipa-primary-light: #2C5282;
+    --sipa-success: #276749;
+    --sipa-danger: #9B2C2C;
+    --sipa-warning: #975A16;
+    --sipa-info: #2B6CB0;
+    --sipa-bg: #F7FAFC;
+    --sipa-bg-secondary: #EDF2F7;
+    --sipa-border: #E2E8F0;
+    --sipa-text: #1A202C;
+    --sipa-text-muted: #718096;
+    --sipa-white: #FFFFFF;
+}
+
+/* --- Global --- */
+body {
+    background-color: var(--sipa-bg) !important;
+    color: var(--sipa-text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* --- Header institucional --- */
+.sipa-header {
+    background: linear-gradient(135deg, var(--sipa-primary) 0%, #243B5E 100%);
+    border-bottom: 3px solid var(--sipa-primary-light);
+    padding: 1.5rem 2rem;
+    margin-bottom: 0;
+}
+
+.sipa-header h1 {
+    color: var(--sipa-white);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+}
+
+.sipa-header .sipa-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    margin-bottom: 0;
+    letter-spacing: 0.02em;
+}
+
+/* --- Tabs institucionales --- */
+.custom-tabs {
+    border-bottom: 2px solid var(--sipa-border) !important;
+    background-color: var(--sipa-white);
+    padding: 0 1rem;
+}
+
+.custom-tabs .tab {
+    border: none !important;
+    border-bottom: 3px solid transparent !important;
+    background-color: transparent !important;
+    color: var(--sipa-text-muted) !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.75rem 1.25rem !important;
+    margin-right: 0.25rem;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.custom-tabs .tab:hover {
+    color: var(--sipa-primary) !important;
+    border-bottom-color: var(--sipa-primary-light) !important;
+}
+
+.custom-tabs .tab--selected {
+    color: var(--sipa-primary) !important;
+    border-bottom: 3px solid var(--sipa-primary-light) !important;
+    font-weight: 600;
+    background-color: transparent !important;
+}
+
+/* --- Barra de controles --- */
+.sipa-controls {
+    background-color: var(--sipa-white);
+    border: 1px solid var(--sipa-border);
+    border-radius: 6px;
+    padding: 0.75rem 1.25rem;
+    margin: 1rem 1.5rem;
+}
+
+.sipa-controls label {
+    color: var(--sipa-text);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+/* --- KPI Cards --- */
+.sipa-kpi-card {
+    background-color: var(--sipa-white);
+    border: 1px solid var(--sipa-border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    transition: box-shadow 0.2s ease;
+    height: 100%;
+}
+
+.sipa-kpi-card:hover {
+    box-shadow: 0 2px 8px rgba(27, 42, 74, 0.08);
+}
+
+.sipa-kpi-card .kpi-label {
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--sipa-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.sipa-kpi-card .kpi-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.25rem;
+}
+
+.sipa-kpi-card .kpi-subtitle {
+    font-size: 0.75rem;
+    color: var(--sipa-text-muted);
+}
+
+/* --- Card generica --- */
+.sipa-card {
+    background-color: var(--sipa-white);
+    border: 1px solid var(--sipa-border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.sipa-card-header {
+    background-color: var(--sipa-bg-secondary);
+    border-bottom: 1px solid var(--sipa-border);
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--sipa-text);
+}
+
+.sipa-card-body {
+    padding: 1rem;
+}
+
+/* --- Alertas institucionales --- */
+.sipa-alert {
+    border: 1px solid var(--sipa-border);
+    border-left: 4px solid;
+    border-radius: 4px;
+    padding: 0.875rem 1rem;
+    margin-bottom: 0.75rem;
+    background-color: var(--sipa-white);
+}
+
+.sipa-alert h6 {
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.sipa-alert p {
+    margin-bottom: 0;
+    font-size: 0.85rem;
+    color: var(--sipa-text-muted);
+}
+
+.sipa-alert-danger {
+    border-left-color: var(--sipa-danger);
+    background-color: #FFF5F5;
+}
+
+.sipa-alert-danger h6 {
+    color: var(--sipa-danger);
+}
+
+.sipa-alert-warning {
+    border-left-color: var(--sipa-warning);
+    background-color: #FFFFF0;
+}
+
+.sipa-alert-warning h6 {
+    color: var(--sipa-warning);
+}
+
+.sipa-alert-success {
+    border-left-color: var(--sipa-success);
+    background-color: #F0FFF4;
+}
+
+.sipa-alert-success h6 {
+    color: var(--sipa-success);
+}
+
+.sipa-alert-info {
+    border-left-color: var(--sipa-info);
+    background-color: #EBF8FF;
+}
+
+.sipa-alert-info h6 {
+    color: var(--sipa-info);
+}
+
+/* --- Botones institucionales --- */
+.sipa-btn-primary {
+    background-color: var(--sipa-primary);
+    color: var(--sipa-white);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    font-weight: 500;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sipa-btn-primary:hover {
+    background-color: var(--sipa-primary-light);
+    color: var(--sipa-white);
+}
+
+.sipa-btn-outline {
+    background-color: transparent;
+    color: var(--sipa-primary-light);
+    border: 1px solid var(--sipa-primary-light);
+    border-radius: 6px;
+    padding: 0.375rem 1rem;
+    font-weight: 500;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.sipa-btn-outline:hover {
+    background-color: var(--sipa-primary-light);
+    color: var(--sipa-white);
+}
+
+.sipa-download-btn {
+    background-color: var(--sipa-primary);
+    color: var(--sipa-white) !important;
+    border: none;
+    border-radius: 6px;
+    padding: 0.625rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.sipa-download-btn:hover {
+    background-color: var(--sipa-primary-light);
+}
+
+/* --- Metodologia --- */
+.sipa-metodo-section {
+    border-left: 4px solid var(--sipa-primary-light);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: var(--sipa-white);
+    border-radius: 0 6px 6px 0;
+}
+
+.sipa-metodo-section h5 {
+    color: var(--sipa-primary);
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.sipa-formula {
+    background-color: var(--sipa-bg-secondary);
+    border: 1px solid var(--sipa-border);
+    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    font-family: "Consolas", "Monaco", monospace;
+    font-size: 0.85rem;
+    color: var(--sipa-text);
+    margin: 0.5rem 0;
+    display: block;
+}
+
+/* --- Dataset card (tab Datos) --- */
+.sipa-dataset-card {
+    background-color: var(--sipa-white);
+    border: 1px solid var(--sipa-border);
+    border-radius: 8px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.sipa-dataset-card:hover {
+    border-color: var(--sipa-primary-light);
+    box-shadow: 0 2px 8px rgba(27, 42, 74, 0.08);
+}
+
+/* --- Footer institucional --- */
+.sipa-footer {
+    border-top: 2px solid var(--sipa-border);
+    padding: 1rem 2rem;
+    margin-top: 3rem;
+    text-align: center;
+    color: var(--sipa-text-muted);
+    font-size: 0.8rem;
+}
+
+/* --- DataTable institucional --- */
+.dash-table-container .dash-header {
+    background-color: var(--sipa-primary) !important;
+    color: var(--sipa-white) !important;
+    font-weight: 600;
+}
+
+/* --- Badges institucionales --- */
+.sipa-badge {
+    display: inline-block;
+    padding: 0.25rem 0.625rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.sipa-badge-danger {
+    background-color: #FED7D7;
+    color: var(--sipa-danger);
+}
+
+.sipa-badge-warning {
+    background-color: #FEFCBF;
+    color: var(--sipa-warning);
+}
+
+.sipa-badge-success {
+    background-color: #C6F6D5;
+    color: var(--sipa-success);
+}
+
+.sipa-badge-info {
+    background-color: #BEE3F8;
+    color: var(--sipa-info);
+}
+
+/* --- Utilidades --- */
+.sipa-section-title {
+    color: var(--sipa-primary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--sipa-border);
+}
+
+/* Tabla en comparaciones con colores suaves */
+.sipa-table-positive {
+    background-color: #F0FFF4 !important;
+    color: var(--sipa-success) !important;
+}
+
+.sipa-table-negative {
+    background-color: #FFF5F5 !important;
+    color: var(--sipa-danger) !important;
+}
+
+/* Resumen de alertas */
+.sipa-alertas-summary {
+    background-color: var(--sipa-white);
+    border: 1px solid var(--sipa-border);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+/* Loading spinner override */
+._dash-loading {
+    color: var(--sipa-primary-light) !important;
+}
+
+/* Dropdown estilos */
+.Select-control {
+    border-color: var(--sipa-border) !important;
+}
+
+.Select-option.is-focused {
+    background-color: var(--sipa-bg-secondary) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sipa-header h1 {
+        font-size: 1.15rem;
+    }
+
+    .sipa-kpi-card .kpi-value {
+        font-size: 1.4rem;
+    }
+
+    .sipa-controls {
+        margin: 0.75rem;
+    }
+}
