@@ -3,7 +3,7 @@ Tab Comparaciones: Periodo A vs B multi-fuente con presets rapidos.
 Soporta: Empleo (C3), Remuneraciones (R3), Empresas (E2), Flujos (F3).
 """
 
-from dash import html, dcc, Input, Output, dash_table
+from dash import html, dcc, Input, Output, State, dash_table
 import plotly.express as px
 import pandas as pd
 
@@ -60,6 +60,29 @@ def _get_sector_descriptions():
         return {}
     desc_c3 = desc_df[desc_df['Tabla'] == 'C3']
     return dict(zip(desc_c3['Código'], desc_c3['Descripción']))
+
+
+def _find_nearest_period(period_str, target_periods):
+    """Busca el periodo mas cercano en fecha a period_str dentro de target_periods.
+    Retorna el string del periodo mas cercano, o None."""
+    if not period_str or not target_periods:
+        return None
+    dt = parse_period_string(period_str)
+    if dt is None:
+        return None
+
+    df = cache.get_ref(VARIABLES['empleo']['dataset'])  # solo para tener parse
+    best = None
+    best_diff = None
+    for p in target_periods:
+        p_dt = parse_period_string(p)
+        if p_dt is None:
+            continue
+        diff = abs((p_dt - dt).days)
+        if best_diff is None or diff < best_diff:
+            best_diff = diff
+            best = p
+    return best
 
 
 def create_comparaciones_layout():
@@ -138,24 +161,44 @@ def create_comparaciones_layout():
 
 
 def register_comparaciones_callbacks(app):
-    # Callback 1: Actualizar periodos cuando cambia la variable
+    # Callback 1: Actualizar opciones de periodos cuando cambia la variable,
+    # preservando la seleccion actual buscando el periodo mas cercano en fecha
     @app.callback(
         [Output('dd-periodo-a', 'options'),
          Output('dd-periodo-b', 'options'),
          Output('dd-periodo-a', 'value'),
          Output('dd-periodo-b', 'value'),
          Output('comp-freq-badge', 'children')],
-        [Input('comp-variable', 'value')]
+        [Input('comp-variable', 'value')],
+        [State('dd-periodo-a', 'value'),
+         State('dd-periodo-b', 'value')]
     )
-    def update_period_options(variable):
+    def update_period_options(variable, current_a, current_b):
         var_cfg = VARIABLES.get(variable, VARIABLES['empleo'])
         periods = _get_periods_for(var_cfg['dataset'])
         options = [{'label': p, 'value': p} for p in periods]
 
-        # Seleccionar ultimo y penultimo por defecto
-        val_a = periods[-1] if periods else None
-        offset = var_cfg['preset_offset']['trim']
-        val_b = periods[offset] if len(periods) > abs(offset) else (periods[0] if periods else None)
+        # Intentar preservar la seleccion buscando el periodo mas cercano
+        if current_a:
+            val_a = _find_nearest_period(current_a, periods)
+        else:
+            val_a = None
+        if current_b:
+            val_b = _find_nearest_period(current_b, periods)
+        else:
+            val_b = None
+
+        # Fallback si no se pudo mapear
+        if not val_a:
+            val_a = periods[-1] if periods else None
+        if not val_b:
+            offset = var_cfg['preset_offset']['trim']
+            val_b = periods[offset] if len(periods) > abs(offset) else (periods[0] if periods else None)
+
+        # Evitar que ambos queden iguales
+        if val_a and val_b and val_a == val_b and len(periods) >= 2:
+            idx = periods.index(val_a)
+            val_b = periods[idx - 1] if idx > 0 else periods[1]
 
         badge = html.Span(var_cfg['freq'], style={
             'fontSize': '0.8rem', 'color': COLORS['text_muted'],
@@ -166,13 +209,13 @@ def register_comparaciones_callbacks(app):
 
         return options, options, val_a, val_b, badge
 
-    # Callback 2: Presets
+    # Callback 2: Presets (solo botones)
     @app.callback(
         [Output('dd-periodo-a', 'value', allow_duplicate=True),
          Output('dd-periodo-b', 'value', allow_duplicate=True)],
         [Input('btn-preset-trim-ant', 'n_clicks'),
-         Input('btn-preset-yoy', 'n_clicks'),
-         Input('comp-variable', 'value')],
+         Input('btn-preset-yoy', 'n_clicks')],
+        [State('comp-variable', 'value')],
         prevent_initial_call=True
     )
     def apply_preset(n_trim, n_yoy, variable):
@@ -182,15 +225,12 @@ def register_comparaciones_callbacks(app):
         if not ctx.triggered:
             raise PreventUpdate
 
-        trigger = ctx.triggered[0]['prop_id'].split('.')[0]
-        if trigger == 'comp-variable':
-            raise PreventUpdate
-
         var_cfg = VARIABLES.get(variable, VARIABLES['empleo'])
         periods = _get_periods_for(var_cfg['dataset'])
         if len(periods) < 2:
             raise PreventUpdate
 
+        trigger = ctx.triggered[0]['prop_id'].split('.')[0]
         if trigger == 'btn-preset-trim-ant':
             offset = var_cfg['preset_offset']['trim']
         elif trigger == 'btn-preset-yoy':
