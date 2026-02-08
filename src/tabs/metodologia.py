@@ -1,5 +1,5 @@
 """
-Tab Metodologia: referencia completa de calculo e indicadores (9 secciones).
+Tab Metodologia: referencia completa de calculo, fuentes e indicadores.
 """
 
 from dash import html
@@ -15,22 +15,65 @@ def create_metodologia_layout():
         html.Div([
             html.H5("1. Introduccion"),
             html.P([
-                "Este panel utiliza datos del ",
+                "Este panel integra datos del ",
+                html.Strong("Observatorio de Empleo y Dinamica Empresarial (OEDE)"),
+                " del Ministerio de Trabajo, Empleo y Seguridad Social (MTEySS), "
+                "basados en registros administrativos del ",
                 html.Strong("Sistema Integrado Previsional Argentino (SIPA)"),
-                ", procesados trimestralmente por el Ministerio de Trabajo, Empleo y Seguridad Social (MTEySS). "
-                "Los indicadores se calculan automaticamente a partir de las series de empleo registrado publicadas "
-                "en los Boletines de Estadisticas Laborales."
+                ". Se procesan automaticamente 7 archivos Excel con 22 datasets que cubren "
+                "empleo, remuneraciones, empresas, flujos laborales y genero."
             ]),
             html.P(
-                "Los datos comprenden empleo registrado del sector privado declarado al SIPA, "
-                "abarcando desde el 1er Trimestre de 1996 hasta el ultimo periodo disponible. "
-                "El procesamiento incluye limpieza, estandarizacion de formatos y calculo de indicadores derivados."
+                "Los datos comprenden empleo registrado del sector privado declarado al SIPA. "
+                "El procesamiento incluye descarga automatica, limpieza, estandarizacion de formatos "
+                "y calculo de indicadores derivados."
             ),
         ], className="sipa-metodo-section"),
 
-        # 2. Indicadores Principales
+        # 2. Fuentes de Datos
         html.Div([
-            html.H5("2. Indicadores Principales"),
+            html.H5("2. Fuentes de Datos OEDE"),
+            html.P("El sistema descarga y procesa 7 archivos Excel publicados por el OEDE:"),
+            html.Table([
+                html.Thead([
+                    html.Tr([
+                        html.Th("Fuente"), html.Th("Frecuencia"),
+                        html.Th("Datasets"), html.Th("Contenido")
+                    ])
+                ]),
+                html.Tbody([
+                    html.Tr([
+                        html.Td("Empleo Trimestral"), html.Td("Trimestral"),
+                        html.Td("C1.1 a C7"), html.Td("Empleo registrado total, por sector CIIU y tamano")
+                    ]),
+                    html.Tr([
+                        html.Td("Remuneraciones Mensual"), html.Td("Mensual"),
+                        html.Td("R1 a R4"), html.Td("Remuneracion promedio y mediana, total y por sector")
+                    ]),
+                    html.Tr([
+                        html.Td("Empresas Anual"), html.Td("Anual"),
+                        html.Td("E1, E2"), html.Td("Cantidad de empresas registradas, total y por sector")
+                    ]),
+                    html.Tr([
+                        html.Td("Flujos de Empleo"), html.Td("Trimestral"),
+                        html.Td("F1 a F3"), html.Td("Altas, bajas, creacion neta y tasas de rotacion")
+                    ]),
+                    html.Tr([
+                        html.Td("Genero"), html.Td("Trimestral"),
+                        html.Td("G1, G2"), html.Td("Empleo y remuneracion por sexo, brecha salarial")
+                    ]),
+                ])
+            ], className="table table-striped",
+               style={'fontSize': '0.85rem'}),
+            html.Small(
+                "Fuente: argentina.gob.ar/trabajo/estadisticas/oede",
+                style={'color': '#718096'}
+            ),
+        ], className="sipa-metodo-section"),
+
+        # 3. Indicadores de Empleo
+        html.Div([
+            html.H5("3. Indicadores de Empleo (C1-C7)"),
 
             html.Div([
                 html.H6("Empleo Total (Niveles)", style={'fontWeight': '600'}),
@@ -44,8 +87,6 @@ def create_metodologia_layout():
                 html.P("Cambio porcentual del empleo respecto al trimestre inmediato anterior."),
                 html.Code("var_trim = ((Empleo(t) - Empleo(t-1)) / Empleo(t-1)) x 100",
                            className="sipa-formula"),
-                html.Small("Donde t = trimestre actual, t-1 = trimestre anterior",
-                           style={'color': '#718096'}),
             ], style={'marginBottom': '1rem'}),
 
             html.Div([
@@ -53,50 +94,148 @@ def create_metodologia_layout():
                 html.P("Cambio porcentual respecto al mismo trimestre del ano anterior."),
                 html.Code("var_yoy = ((Empleo(t) - Empleo(t-4)) / Empleo(t-4)) x 100",
                            className="sipa-formula"),
-                html.Small("Donde t = trimestre actual, t-4 = mismo trimestre ano anterior",
-                           style={'color': '#718096'}),
             ], style={'marginBottom': '1rem'}),
 
             html.Div([
                 html.H6("Indice Base 100", style={'fontWeight': '600'}),
-                html.P("Indice que muestra la evolucion tomando el periodo base (1er Trim 1996) como referencia."),
+                html.P("Evolucion tomando el periodo base (1er Trim 1996) como referencia."),
                 html.Code("index_100 = (Empleo(t) / Empleo(base)) x 100",
                            className="sipa-formula"),
-                html.Small("Periodo base: 1er Trimestre 1996",
-                           style={'color': '#718096'}),
+                html.Small("Periodo base: 1er Trimestre 1996", style={'color': '#718096'}),
             ]),
         ], className="sipa-metodo-section"),
 
-        # 3. Series Temporales
+        # 4. Indicadores de Remuneraciones
         html.Div([
-            html.H5("3. Series Temporales"),
+            html.H5("4. Indicadores de Remuneraciones (R1-R4)"),
+
+            html.Div([
+                html.H6("Remuneracion Promedio (R1, R3)", style={'fontWeight': '600'}),
+                html.P("Remuneracion bruta promedio por todo concepto del total de trabajadores "
+                       "registrados del sector privado. R1 es el total nacional, R3 desagrega por sector CIIU."),
+                html.Code("Rem_promedio = Sum(Remuneraciones) / N(trabajadores)",
+                           className="sipa-formula"),
+                html.Small("Valores a pesos corrientes (nominales)", style={'color': '#718096'}),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Remuneracion Mediana (R2, R4)", style={'fontWeight': '600'}),
+                html.P("Valor que divide la distribucion de remuneraciones en dos mitades iguales. "
+                       "Menos sensible a valores extremos que el promedio."),
+                html.Code("Rem_mediana = P50(distribucion de remuneraciones)",
+                           className="sipa-formula"),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Variacion Mensual", style={'fontWeight': '600'}),
+                html.P("Cambio porcentual de la remuneracion respecto al mes anterior."),
+                html.Code("var_mes = ((Rem(t) - Rem(t-1)) / Rem(t-1)) x 100",
+                           className="sipa-formula"),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 5. Indicadores de Empresas
+        html.Div([
+            html.H5("5. Indicadores de Empresas (E1-E2)"),
+
+            html.Div([
+                html.H6("Total de Empresas (E1)", style={'fontWeight': '600'}),
+                html.P("Cantidad total de empresas del sector privado con al menos un trabajador "
+                       "registrado en el SIPA durante el periodo."),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Empresas por Sector (E2)", style={'fontWeight': '600'}),
+                html.P("Desagregacion por los 14 sectores de actividad economica (letra CIIU)."),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Variacion Anual", style={'fontWeight': '600'}),
+                html.Code("var_anual = ((Empresas(t) - Empresas(t-1)) / Empresas(t-1)) x 100",
+                           className="sipa-formula"),
+                html.Small("Frecuencia anual, un dato por ano", style={'color': '#718096'}),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 6. Indicadores de Flujos
+        html.Div([
+            html.H5("6. Indicadores de Flujos de Empleo (F1-F3)"),
+
+            html.Div([
+                html.H6("Altas y Bajas (F1)", style={'fontWeight': '600'}),
+                html.P("Cantidad de puestos de trabajo creados (altas) y destruidos (bajas) "
+                       "en el trimestre."),
+                html.Ul([
+                    html.Li([html.Strong("Altas: "), "Nuevos puestos registrados en el periodo"]),
+                    html.Li([html.Strong("Bajas: "), "Puestos dados de baja en el periodo"]),
+                ]),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Creacion Neta", style={'fontWeight': '600'}),
+                html.Code("Creacion_Neta = Altas - Bajas", className="sipa-formula"),
+                html.P("Valor positivo indica creacion neta; negativo indica destruccion neta de empleo.",
+                       style={'fontSize': '0.85rem', 'color': '#718096'}),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Tasas de Rotacion (F2)", style={'fontWeight': '600'}),
+                html.Code("Tasa_Entrada = (Altas / Stock_Empleo) x 100", className="sipa-formula"),
+                html.Code("Tasa_Salida = (Bajas / Stock_Empleo) x 100", className="sipa-formula"),
+                html.Code("Tasa_Rotacion = Tasa_Entrada + Tasa_Salida", className="sipa-formula"),
+                html.Small("Tasas expresadas como porcentaje del stock de empleo",
+                           style={'color': '#718096'}),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Flujos por Sector (F3)", style={'fontWeight': '600'}),
+                html.P("Altas, bajas y creacion neta desagregadas por los 14 sectores CIIU."),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 7. Indicadores de Genero
+        html.Div([
+            html.H5("7. Indicadores de Genero (G1-G2)"),
+
+            html.Div([
+                html.H6("Empleo por Genero (G1)", style={'fontWeight': '600'}),
+                html.P("Cantidad de trabajadores registrados desagregada por sexo (Mujeres y Varones)."),
+                html.Code("Participacion_Fem = Empleo_Mujeres / (Empleo_Mujeres + Empleo_Varones) x 100",
+                           className="sipa-formula"),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Brecha Salarial (G2)", style={'fontWeight': '600'}),
+                html.P("Diferencia porcentual entre la remuneracion de varones y mujeres."),
+                html.Code("Brecha = ((Rem_Varones - Rem_Mujeres) / Rem_Varones) x 100",
+                           className="sipa-formula"),
+                html.Small("Un valor de 40% indica que las mujeres perciben en promedio "
+                           "40% menos que los varones", style={'color': '#718096'}),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 8. Series Temporales
+        html.Div([
+            html.H5("8. Series Temporales y Estacionalidad"),
 
             html.Div([
                 html.H6("Series con Estacionalidad (C1.1, C2.1)", style={'fontWeight': '600'}),
                 html.P("Datos originales sin ajuste estacional. Reflejan patrones ciclicos propios de "
                        "cada periodo del ano (ej: mayor empleo en trimestres de cosecha)."),
-                html.Ul([
-                    html.Li("C1.1: Serie total pais con estacionalidad"),
-                    html.Li("C2.1: Serie por sector economico con estacionalidad")
-                ])
             ], style={'marginBottom': '1rem'}),
 
             html.Div([
                 html.H6("Series Desestacionalizadas (C1.2, C2.2)", style={'fontWeight': '600'}),
                 html.P("Datos ajustados para eliminar efectos estacionales, permitiendo observar "
                        "la tendencia subyacente del empleo."),
-                html.Ul([
-                    html.Li("C1.2: Serie total pais desestacionalizada"),
-                    html.Li("C2.2: Serie por sector economico desestacionalizada")
-                ]),
                 html.Small("Metodo de ajuste: X-13ARIMA-SEATS del US Census Bureau",
-                           style={'color': '#718096'})
+                           style={'color': '#718096'}),
             ]),
         ], className="sipa-metodo-section"),
 
-        # 4. Clasificacion CIIU
+        # 9. Clasificacion CIIU
         html.Div([
-            html.H5("4. Clasificacion Industrial (CIIU)"),
+            html.H5("9. Clasificacion Industrial (CIIU)"),
             html.P("Los datos sectoriales se organizan segun la Clasificacion Industrial "
                    "Internacional Uniforme (CIIU Rev. 3):"),
             html.Table([
@@ -108,7 +247,7 @@ def create_metodologia_layout():
                 ]),
                 html.Tbody([
                     html.Tr([html.Td("C3"), html.Td("Letra (Secciones)"),
-                             html.Td("14 sectores"), html.Td("A: Agricultura, D: Industria")]),
+                             html.Td("14 sectores"), html.Td("A: Agricultura, C: Industria")]),
                     html.Tr([html.Td("C4"), html.Td("2 digitos (Divisiones)"),
                              html.Td("56 ramas"), html.Td("15: Alimentos, 24: Quimicos")]),
                     html.Tr([html.Td("C6"), html.Td("3 digitos (Grupos)"),
@@ -118,98 +257,109 @@ def create_metodologia_layout():
                 ])
             ], className="table table-striped",
                style={'fontSize': '0.85rem'}),
-        ], className="sipa-metodo-section"),
-
-        # 5. Clasificacion por Tamano
-        html.Div([
-            html.H5("5. Clasificacion por Tamano de Empresa (C5)"),
-            html.P("El empleo se clasifica segun el tamano de la empresa empleadora. "
-                   "Los datos se desagregan por sector economico y tamano:"),
-            html.Table([
-                html.Thead([html.Tr([html.Th("Categoria"), html.Th("Rango de Empleados")])]),
-                html.Tbody([
-                    html.Tr([html.Td(html.Strong("Microempresas")), html.Td("1 a 5 empleados")]),
-                    html.Tr([html.Td(html.Strong("Pequenas")), html.Td("6 a 25 empleados")]),
-                    html.Tr([html.Td(html.Strong("Medianas")), html.Td("26 a 100 empleados")]),
-                    html.Tr([html.Td(html.Strong("Grandes")), html.Td("Mas de 100 empleados")])
-                ])
-            ], className="table table-striped",
-               style={'fontSize': '0.85rem'}),
-            html.P("Los sectores disponibles son: Industria, Comercio, Servicios y Total.",
+            html.P("Los sectores por letra CIIU aplican tambien a remuneraciones (R3, R4), "
+                   "empresas (E2) y flujos (F3).",
                    style={'color': '#718096', 'fontSize': '0.85rem'}),
         ], className="sipa-metodo-section"),
 
-        # 6. Indicadores Derivados
+        # 10. Sistema de Alertas
         html.Div([
-            html.H5("6. Indicadores Derivados"),
-
-            html.Div([
-                html.H6("Promedio Movil 4 Trimestres (PM4T)", style={'fontWeight': '600'}),
-                html.P("Suaviza fluctuaciones de corto plazo promediando los ultimos 4 trimestres."),
-                html.Code("PM4T(t) = (X(t) + X(t-1) + X(t-2) + X(t-3)) / 4",
-                           className="sipa-formula"),
-            ], style={'marginBottom': '1rem'}),
-
-            html.Div([
-                html.H6("Participacion Sectorial", style={'fontWeight': '600'}),
-                html.P("Peso relativo de cada sector en el empleo total del periodo."),
-                html.Code("Participacion(s,t) = Empleo(s,t) / Empleo(total,t) x 100",
-                           className="sipa-formula"),
-            ], style={'marginBottom': '1rem'}),
-
-            html.Div([
-                html.H6("Deteccion de Anomalias", style={'fontWeight': '600'}),
-                html.P("Valores atipicos identificados por desviacion respecto a la media movil."),
-                html.Code("Outlier = |X(t) - media_movil(8T)| > k x sigma_movil(8T)",
-                           className="sipa-formula"),
-                html.Small("Donde k = 2 (factor de desviacion estandar)",
-                           style={'color': '#718096'}),
-            ]),
-        ], className="sipa-metodo-section"),
-
-        # 7. Sistema de Alertas
-        html.Div([
-            html.H5("7. Sistema de Alertas"),
-            html.P("El sistema monitorea automaticamente los datos y genera alertas "
+            html.H5("10. Sistema de Alertas Multi-Fuente"),
+            html.P("El sistema monitorea automaticamente 5 fuentes de datos y genera alertas "
                    "en cuatro categorias:"),
 
             html.Div([
                 html.Div([
                     html.Span("CRITICA", className="sipa-badge sipa-badge-danger"),
-                    html.Span(" - Variacion trimestral > umbral o caida interanual severa",
+                    html.Span(" - Caidas severas, destruccion masiva de empleo, "
+                              "aumentos significativos de brecha salarial",
                               style={'fontSize': '0.85rem'}),
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Span("ADVERTENCIA", className="sipa-badge sipa-badge-warning"),
-                    html.Span(" - Variacion moderada o cambio de tendencia detectado",
+                    html.Span(" - Variaciones moderadas, cambios de tendencia, "
+                              "rotacion elevada, creacion neta negativa",
                               style={'fontSize': '0.85rem'}),
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Span("POSITIVA", className="sipa-badge sipa-badge-success"),
-                    html.Span(" - Crecimiento robusto o creacion significativa de empleos",
+                    html.Span(" - Crecimiento robusto, creacion neta significativa, "
+                              "reduccion de brecha salarial",
                               style={'fontSize': '0.85rem'}),
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Span("INFORMATIVA", className="sipa-badge sipa-badge-info"),
-                    html.Span(" - Maximos historicos, variaciones sectoriales notables",
+                    html.Span(" - Maximos historicos, niveles de brecha actuales, "
+                              "estancamiento empresarial",
                               style={'fontSize': '0.85rem'}),
                 ], style={'marginBottom': '1rem'}),
             ]),
 
-            html.H6("Umbrales configurables", style={'fontWeight': '600'}),
-            html.P("En la tab Alertas se pueden ajustar:"),
+            html.H6("Fuentes analizadas", style={'fontWeight': '600'}),
+            html.Table([
+                html.Thead([
+                    html.Tr([html.Th("Fuente"), html.Th("Indicadores monitoreados")])
+                ]),
+                html.Tbody([
+                    html.Tr([html.Td("Empleo (C1.1)"),
+                             html.Td("Var. trimestral/interanual, perdida absoluta, cambio de tendencia")]),
+                    html.Tr([html.Td("Empleo Sectorial (C3)"),
+                             html.Td("Caidas por sector, crisis generalizada (>3 sectores)")]),
+                    html.Tr([html.Td("Remuneraciones (R1)"),
+                             html.Td("Var. mensual, maximo historico, 3 meses consecutivos de caida")]),
+                    html.Tr([html.Td("Empresas (E1)"),
+                             html.Td("Var. anual, estancamiento")]),
+                    html.Tr([html.Td("Flujos (F1, F2)"),
+                             html.Td("Creacion neta, destruccion sostenida, tasa salida > entrada, rotacion")]),
+                    html.Tr([html.Td("Genero (G2)"),
+                             html.Td("Cambio de brecha salarial, tendencia sostenida (3+ periodos)")]),
+                ])
+            ], className="table table-striped",
+               style={'fontSize': '0.85rem'}),
+
+            html.H6("Alerta cruzada", style={'fontWeight': '600', 'marginTop': '1rem'}),
+            html.P("Cuando 3 o mas fuentes presentan senales negativas simultaneas, se genera una "
+                   "alerta cruzada de maxima prioridad indicando deterioro en multiples dimensiones.",
+                   style={'fontSize': '0.85rem'}),
+
+            html.H6("Umbrales configurables", style={'fontWeight': '600', 'marginTop': '1rem'}),
             html.Ul([
                 html.Li("Umbral de variacion trimestral (default: 5%)"),
                 html.Li("Umbral de variacion interanual (default: 10%)"),
             ]),
-            html.P("Las alertas sectoriales utilizan multiplicadores sobre estos umbrales: "
-                   "crisis sectorial cuando la caida supera 1.5x el umbral interanual.",
-                   style={'color': '#718096', 'fontSize': '0.85rem'}),
         ], className="sipa-metodo-section"),
 
-        # 8. Fuentes y Actualizacion
+        # 11. Pipeline de Datos
         html.Div([
-            html.H5("8. Fuentes y Actualizacion"),
+            html.H5("11. Pipeline de Datos"),
+            html.P("El sistema cuenta con un pipeline automatizado para mantener los datos actualizados:"),
+
+            html.Div([
+                html.H6("1. Descarga", style={'fontWeight': '600'}),
+                html.Code("python scripts/download_oede.py --all", className="sipa-formula"),
+                html.P("Descarga los 7 archivos Excel desde argentina.gob.ar a data/raw/",
+                       style={'fontSize': '0.85rem'}),
+            ], style={'marginBottom': '0.75rem'}),
+
+            html.Div([
+                html.H6("2. Preprocesamiento", style={'fontWeight': '600'}),
+                html.Code("python scripts/preprocess/remuneraciones_mes.py", className="sipa-formula"),
+                html.P("Cada fuente tiene su procesador que extrae hojas, limpia datos y genera CSV + Parquet. "
+                       "Disponibles: empleo_trimestral, remuneraciones_mes, empresas, flujos, genero.",
+                       style={'fontSize': '0.85rem'}),
+            ], style={'marginBottom': '0.75rem'}),
+
+            html.Div([
+                html.H6("3. Carga", style={'fontWeight': '600'}),
+                html.P("El dashboard carga automaticamente desde Parquet (data/optimized/) con fallback a CSV "
+                       "(data/processed/). Tambien soporta carga desde PostgreSQL.",
+                       style={'fontSize': '0.85rem'}),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 12. Fuentes y Actualizacion
+        html.Div([
+            html.H5("12. Fuentes y Actualizacion"),
             html.Div([
                 html.Div([
                     html.Strong("Fuente primaria: "),
@@ -217,26 +367,28 @@ def create_metodologia_layout():
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Strong("Procesamiento: "),
-                    html.Span("Ministerio de Trabajo, Empleo y Seguridad Social (MTEySS)")
+                    html.Span("Observatorio de Empleo y Dinamica Empresarial (OEDE) - MTEySS")
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Strong("Periodicidad: "),
-                    html.Span("Trimestral (con rezago de 2-3 meses respecto al cierre del trimestre)")
+                    html.Span("Mensual (remuneraciones), Trimestral (empleo, flujos, genero), "
+                              "Anual (empresas)")
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Strong("Cobertura temporal: "),
-                    html.Span("Desde 1er Trimestre 1996 hasta ultimo boletin publicado")
+                    html.Span("Empleo desde 1T 1996 | Remuneraciones desde Ene 1995 | "
+                              "Empresas desde 1996 | Flujos desde 2T 1996 | Genero desde 3T 2003")
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
-                    html.Strong("Formatos disponibles: "),
+                    html.Strong("Formatos: "),
                     html.Span("Parquet (optimizado), CSV (compatible), Excel (fuente original)")
                 ]),
             ]),
         ], className="sipa-metodo-section"),
 
-        # 9. Notas Tecnicas y Glosario
+        # 13. Notas Tecnicas y Glosario
         html.Div([
-            html.H5("9. Notas Tecnicas y Glosario"),
+            html.H5("13. Notas Tecnicas y Glosario"),
 
             html.H6("Notas Tecnicas", style={'fontWeight': '600', 'marginBottom': '0.5rem'}),
             html.Ul([
@@ -245,19 +397,28 @@ def create_metodologia_layout():
                 html.Li("Las series pueden tener revisiones retroactivas por parte del organismo fuente"),
                 html.Li("Valores faltantes se indican como 's.d.' en archivos fuente y se tratan como nulos"),
                 html.Li("El ajuste estacional es realizado por el organismo fuente, no por este panel"),
+                html.Li("Las remuneraciones son nominales (pesos corrientes), sin ajuste por inflacion"),
+                html.Li("La brecha salarial se calcula como diferencia porcentual sobre la remuneracion masculina"),
             ]),
 
             html.H6("Glosario", style={'fontWeight': '600', 'marginTop': '1rem', 'marginBottom': '0.5rem'}),
             html.Dl([
                 html.Dt("SIPA"), html.Dd("Sistema Integrado Previsional Argentino"),
+                html.Dt("OEDE"), html.Dd("Observatorio de Empleo y Dinamica Empresarial"),
                 html.Dt("CIIU"), html.Dd("Clasificacion Industrial Internacional Uniforme (Rev. 3)"),
                 html.Dt("MTEySS"), html.Dd("Ministerio de Trabajo, Empleo y Seguridad Social"),
                 html.Dt("Empleo Registrado"),
                 html.Dd("Trabajadores con aportes declarados al sistema de seguridad social"),
+                html.Dt("Creacion Neta"),
+                html.Dd("Diferencia entre altas y bajas de puestos de trabajo en un periodo"),
+                html.Dt("Tasa de Rotacion"),
+                html.Dd("Suma de tasas de entrada y salida; mide la dinamica del mercado laboral"),
+                html.Dt("Brecha Salarial"),
+                html.Dd("Diferencia porcentual de remuneracion entre varones y mujeres"),
                 html.Dt("Desestacionalizacion"),
-                html.Dd("Proceso estadistico para remover patrones estacionales recurrentes de una serie temporal"),
+                html.Dd("Proceso estadistico para remover patrones estacionales recurrentes"),
                 html.Dt("X-13ARIMA-SEATS"),
-                html.Dd("Metodo de ajuste estacional desarrollado por el US Census Bureau, estandar internacional"),
+                html.Dd("Metodo de ajuste estacional desarrollado por el US Census Bureau"),
             ]),
         ], className="sipa-metodo-section"),
 
