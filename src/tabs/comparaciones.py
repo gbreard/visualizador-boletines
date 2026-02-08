@@ -12,9 +12,26 @@ from src.data.processing import filter_by_dates
 from src.layout.components import empty_state, create_section_card
 
 
+def _get_c3_periods():
+    """Obtiene periodos disponibles en C3 (pueden diferir de los globales)."""
+    df = cache.get_ref('C3')
+    if df.empty or 'Date' not in df.columns or 'Período' not in df.columns:
+        return cache.periods
+    return df.sort_values('Date')['Período'].unique().tolist()
+
+
+def _get_sector_descriptions():
+    """Obtiene mapeo de codigo de sector a descripcion."""
+    desc_df = cache.get_ref('descriptores_CIIU')
+    if desc_df.empty or 'Tabla' not in desc_df.columns:
+        return {}
+    desc_c3 = desc_df[desc_df['Tabla'] == 'C3']
+    return dict(zip(desc_c3['Código'], desc_c3['Descripción']))
+
+
 def create_comparaciones_layout():
     """Layout de la tab Comparaciones."""
-    periods = cache.periods
+    periods = _get_c3_periods()
     period_options = [{'label': p, 'value': p} for p in periods]
 
     return html.Div([
@@ -78,7 +95,7 @@ def register_comparaciones_callbacks(app):
             from dash.exceptions import PreventUpdate
             raise PreventUpdate
 
-        periods = cache.periods
+        periods = _get_c3_periods()
         if len(periods) < 2:
             from dash.exceptions import PreventUpdate
             raise PreventUpdate
@@ -116,44 +133,64 @@ def register_comparaciones_callbacks(app):
         if df.empty:
             return "", empty_state("No hay datos disponibles")
 
-        df_a = df[df['Período'] == periodo_a]
-        df_b = df[df['Período'] == periodo_b]
+        # Ordenar cronologicamente: anterior = base, posterior = final
+        from src.data.processing import parse_period_string
+        date_a = parse_period_string(periodo_a)
+        date_b = parse_period_string(periodo_b)
 
-        if df_a.empty or df_b.empty:
-            return "", empty_state("Uno de los periodos no tiene datos")
+        if date_a and date_b and date_a < date_b:
+            p_anterior, p_posterior = periodo_a, periodo_b
+        else:
+            p_anterior, p_posterior = periodo_b, periodo_a
+
+        df_ant = df[df['Período'] == p_anterior]
+        df_post = df[df['Período'] == p_posterior]
+
+        if df_ant.empty or df_post.empty:
+            return "", empty_state("Uno de los periodos no tiene datos en C3")
+
+        # Obtener descripciones de sectores
+        sector_desc = _get_sector_descriptions()
 
         df_comp = pd.merge(
-            df_a[['Sector', 'Empleo']],
-            df_b[['Sector', 'Empleo']],
-            on='Sector', suffixes=('_A', '_B')
+            df_post[['Sector', 'Empleo']].rename(columns={'Empleo': 'Empleo_post'}),
+            df_ant[['Sector', 'Empleo']].rename(columns={'Empleo': 'Empleo_ant'}),
+            on='Sector'
         )
 
+        # Agregar descripcion del sector
+        df_comp['Descripcion'] = df_comp['Sector'].map(
+            lambda s: sector_desc.get(s, s)
+        )
+
+        # Siempre: posterior - anterior
         if tipo == 'abs':
-            df_comp['Diferencia'] = df_comp['Empleo_A'] - df_comp['Empleo_B']
+            df_comp['Diferencia'] = df_comp['Empleo_post'] - df_comp['Empleo_ant']
             title = 'Diferencia absoluta'
         elif tipo == 'pct':
-            df_comp['Diferencia'] = ((df_comp['Empleo_A'] - df_comp['Empleo_B']) / df_comp['Empleo_B']) * 100
+            df_comp['Diferencia'] = ((df_comp['Empleo_post'] - df_comp['Empleo_ant']) / df_comp['Empleo_ant']) * 100
             title = 'Diferencia porcentual'
         else:
-            df_comp['Diferencia'] = df_comp['Empleo_A'] / df_comp['Empleo_B']
-            title = 'Ratio A/B'
+            df_comp['Diferencia'] = df_comp['Empleo_post'] / df_comp['Empleo_ant']
+            title = 'Ratio'
 
         fig = px.bar(
             df_comp.sort_values('Diferencia'),
-            x='Diferencia', y='Sector', orientation='h',
-            title=f'{title}: {periodo_a} vs {periodo_b}',
+            x='Diferencia', y='Descripcion', orientation='h',
+            title=f'{title}: {p_posterior} vs {p_anterior}',
             color='Diferencia',
             color_continuous_scale='RdBu_r',
-            color_continuous_midpoint=0
+            color_continuous_midpoint=0 if tipo != 'ratio' else 1
         )
         fig.update_layout(**PLOTLY_TEMPLATE['layout'])
+        fig.update_layout(yaxis_title='')
 
         tabla = dash_table.DataTable(
             data=df_comp.to_dict('records'),
             columns=[
-                {'name': 'Sector', 'id': 'Sector'},
-                {'name': periodo_a, 'id': 'Empleo_A', 'type': 'numeric', 'format': {'specifier': ',.0f'}},
-                {'name': periodo_b, 'id': 'Empleo_B', 'type': 'numeric', 'format': {'specifier': ',.0f'}},
+                {'name': 'Sector', 'id': 'Descripcion'},
+                {'name': p_anterior, 'id': 'Empleo_ant', 'type': 'numeric', 'format': {'specifier': ',.0f'}},
+                {'name': p_posterior, 'id': 'Empleo_post', 'type': 'numeric', 'format': {'specifier': ',.0f'}},
                 {'name': title, 'id': 'Diferencia', 'type': 'numeric',
                  'format': {'specifier': ',.2f' if tipo == 'pct' else ',.0f'}}
             ],
@@ -170,11 +207,12 @@ def register_comparaciones_callbacks(app):
                 {'if': {'filter_query': '{Diferencia} < 0', 'column_id': 'Diferencia'},
                  'backgroundColor': '#FFF5F5', 'color': '#9B2C2C'}
             ],
+            sort_action="native",
             page_size=15
         )
 
         return "", html.Div([
-            create_section_card(f"{title}: {periodo_a} vs {periodo_b}", [
+            create_section_card(f"{title}: {p_posterior} vs {p_anterior}", [
                 dcc.Graph(figure=fig),
             ]),
             create_section_card("Tabla de Comparacion", [tabla])

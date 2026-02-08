@@ -12,6 +12,15 @@ from src.data.processing import get_latest_period_data, filter_by_dates, get_lat
 from src.layout.components import create_kpi_card, create_section_card
 
 
+def _get_sector_descriptions():
+    """Obtiene mapeo de codigo de sector a descripcion desde descriptores."""
+    desc_df = cache.get_ref('descriptores_CIIU')
+    if desc_df.empty or 'Tabla' not in desc_df.columns:
+        return {}
+    desc_c3 = desc_df[desc_df['Tabla'] == 'C3']
+    return dict(zip(desc_c3['Código'], desc_c3['Descripción']))
+
+
 def create_resumen_layout():
     """Layout de la tab Resumen."""
     return html.Div([
@@ -52,10 +61,14 @@ def register_resumen_callbacks(app):
         c3 = cache.get_ref('C3')
 
         c1_filtered = filter_by_dates(c1, fecha_desde, fecha_hasta)
+        c3_filtered = filter_by_dates(c3, fecha_desde, fecha_hasta)
 
-        # KPIs
+        # KPIs desde C1.1
         kpis = get_latest_period_data(c1_filtered)
-        periodo_str = kpis['periodo']
+        periodo_c1 = kpis['periodo']
+
+        # Periodo real de C3 (puede diferir de C1.1)
+        periodo_c3 = get_latest_period_str(c3_filtered) if not c3_filtered.empty else None
 
         # Determinar tendencias
         trend_trim = None
@@ -71,7 +84,7 @@ def register_resumen_callbacks(app):
         kpi_cards = [
             html.Div([
                 create_kpi_card("Empleo Total", kpis['empleo_actual'],
-                                subtitle=f"Periodo: {periodo_str}",
+                                subtitle=f"Periodo: {periodo_c1}",
                                 id_prefix="kpi-total")
             ], className="col-md-3"),
             html.Div([
@@ -91,19 +104,25 @@ def register_resumen_callbacks(app):
             ], className="col-md-3"),
         ]
 
-        subtitle = html.Span(f"Datos hasta: {periodo_str}") if periodo_str else ""
+        # Subtitulo informativo
+        subtitle_parts = [f"KPIs: {periodo_c1} (C1.1)"]
+        if periodo_c3 and periodo_c3 != periodo_c1:
+            subtitle_parts.append(f"Sectores: {periodo_c3} (C3)")
+        subtitle = html.Span(" | ".join(subtitle_parts))
 
-        # Barras horizontales
+        # Barras horizontales con descripciones de sector
+        sector_desc = _get_sector_descriptions()
         fig_bars = go.Figure()
-        c3_filtered = filter_by_dates(c3, fecha_desde, fecha_hasta)
         if not c3_filtered.empty and 'Sector' in c3_filtered.columns and 'Empleo' in c3_filtered.columns:
-            ultimo_periodo = get_latest_period_str(c3_filtered) or c3_filtered['Período'].iloc[-1]
+            ultimo_periodo = periodo_c3 or c3_filtered['Período'].iloc[-1]
             latest_c3 = c3_filtered[c3_filtered['Período'] == ultimo_periodo].sort_values('Empleo', ascending=True)
 
+            # Usar descripciones en vez de letras
+            labels = [sector_desc.get(s, s) for s in latest_c3['Sector']]
             colors = [SECTOR_COLORS.get(s, COLORS['primary_light']) for s in latest_c3['Sector']]
             fig_bars = go.Figure(go.Bar(
                 x=latest_c3['Empleo'],
-                y=latest_c3['Sector'],
+                y=labels,
                 orientation='h',
                 marker_color=colors
             ))

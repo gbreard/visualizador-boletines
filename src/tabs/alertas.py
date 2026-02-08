@@ -258,21 +258,32 @@ def register_alertas_callbacks(app):
         # Ordenar
         alertas.sort(key=lambda x: x.get('prioridad', 5))
 
+        # Periodo real de C3
+        periodo_c3 = "N/D"
+        if not df_c3.empty and 'Date' in df_c3.columns and 'Período' in df_c3.columns:
+            periodo_c3 = df_c3.loc[df_c3['Date'].idxmax(), 'Período']
+
         # Periodo texto
         if fecha_desde and fecha_hasta:
             periodo_texto = html.Div([
                 html.Strong("Periodo analizado: "),
                 f"{fecha_desde} hasta {fecha_hasta}",
                 html.Br(),
-                html.Small(f"Ultimo periodo con datos: {periodo_info}",
-                           style={'color': '#718096'})
+                html.Small([
+                    f"Empleo total (C1.1): hasta {periodo_info}",
+                    html.Span(" | "),
+                    f"Sectorial (C3): hasta {periodo_c3}",
+                ], style={'color': '#718096'})
             ])
         else:
             periodo_texto = html.Div([
                 html.Strong("Analizando todos los periodos disponibles"),
                 html.Br(),
-                html.Small(f"Ultimo periodo: {periodo_info}",
-                           style={'color': '#718096'})
+                html.Small([
+                    f"Empleo total (C1.1): hasta {periodo_info}",
+                    html.Span(" | "),
+                    f"Sectorial (C3): hasta {periodo_c3}",
+                ], style={'color': '#718096'})
             ])
 
         # Renderizar
