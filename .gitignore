@@ -58,15 +58,20 @@ env/
 venv/
 ENV/
 
-# Data files (opcional - comentar si quieres versionar los datos)
-# data/raw/*.xlsx
-# data/optimized/*.parquet
+# Data files - raw Excel (se descargan con scripts/download_oede.py)
+data/raw/*.xlsx
 
 # Temporary files
 *.tmp
 *.bak
 *.swp
 *~
+_ul
+_ul-*
+
+# Sensitive / personal
+ngrok_recovery_codes.txt
+UsersGerardoresp_resumen.txt
 
 # OS files
 Thumbs.db
