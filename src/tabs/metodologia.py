@@ -20,8 +20,9 @@ def create_metodologia_layout():
                 " del Ministerio de Trabajo, Empleo y Seguridad Social (MTEySS), "
                 "basados en registros administrativos del ",
                 html.Strong("Sistema Integrado Previsional Argentino (SIPA)"),
-                ". Se procesan automaticamente 7 archivos Excel con 22 datasets que cubren "
-                "empleo, remuneraciones, empresas, flujos laborales y genero."
+                ". Se procesan automaticamente 7 archivos Excel del OEDE y una serie de IPC, "
+                "generando 26 datasets que cubren empleo, remuneraciones (nominales y reales), "
+                "empresas, flujos laborales y genero."
             ]),
             html.P(
                 "Los datos comprenden empleo registrado del sector privado declarado al SIPA. "
@@ -33,7 +34,7 @@ def create_metodologia_layout():
         # 2. Fuentes de Datos
         html.Div([
             html.H5("2. Fuentes de Datos OEDE"),
-            html.P("El sistema descarga y procesa 7 archivos Excel publicados por el OEDE:"),
+            html.P("El sistema descarga y procesa 7 archivos Excel del OEDE mas una serie de IPC:"),
             html.Table([
                 html.Thead([
                     html.Tr([
@@ -62,11 +63,16 @@ def create_metodologia_layout():
                         html.Td("Genero"), html.Td("Trimestral"),
                         html.Td("G1, G2"), html.Td("Empleo y remuneracion por sexo, brecha salarial")
                     ]),
+                    html.Tr([
+                        html.Td("IPC Empalmado"), html.Td("Mensual"),
+                        html.Td("IPC"), html.Td("Indice de precios al consumidor (base Ene 2016=100)")
+                    ]),
                 ])
             ], className="table table-striped",
                style={'fontSize': '0.85rem'}),
             html.Small(
-                "Fuente: argentina.gob.ar/trabajo/estadisticas/oede",
+                "Fuentes: OEDE (argentina.gob.ar/trabajo/estadisticas/oede) | "
+                "IPC empalmado (github.com/matuteiglesias/IPC-Argentina)",
                 style={'color': '#718096'}
             ),
         ], className="sipa-metodo-section"),
@@ -112,7 +118,8 @@ def create_metodologia_layout():
             html.Div([
                 html.H6("Remuneracion Promedio (R1, R3)", style={'fontWeight': '600'}),
                 html.P("Remuneracion bruta promedio por todo concepto del total de trabajadores "
-                       "registrados del sector privado. R1 es el total nacional, R3 desagrega por sector CIIU."),
+                       "registrados del sector privado. R1 es el total nacional, R3 desagrega por "
+                       "los 14 sectores CIIU."),
                 html.Code("Rem_promedio = Sum(Remuneraciones) / N(trabajadores)",
                            className="sipa-formula"),
                 html.Small("Valores a pesos corrientes (nominales)", style={'color': '#718096'}),
@@ -127,16 +134,83 @@ def create_metodologia_layout():
             ], style={'marginBottom': '1rem'}),
 
             html.Div([
-                html.H6("Variacion Mensual", style={'fontWeight': '600'}),
-                html.P("Cambio porcentual de la remuneracion respecto al mes anterior."),
-                html.Code("var_mes = ((Rem(t) - Rem(t-1)) / Rem(t-1)) x 100",
+                html.H6("Variacion Mensual y Anual", style={'fontWeight': '600'}),
+                html.P("Cambio porcentual de la remuneracion respecto al mes anterior y al mismo mes del ano anterior."),
+                html.Code("var_periodo = ((Rem(t) - Rem(t-1)) / Rem(t-1)) x 100",
                            className="sipa-formula"),
+                html.Code("var_yoy = ((Rem(t) - Rem(t-12)) / Rem(t-12)) x 100",
+                           className="sipa-formula"),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Efecto Aguinaldo (SAC)", style={'fontWeight': '600'}),
+                html.P("La remuneracion por todo concepto incluye el Sueldo Anual Complementario, "
+                       "que se paga en junio y diciembre. Esto genera picos pronunciados en esos meses. "
+                       "El panel ofrece la opcion de suavizar las series con un promedio movil de 12 meses "
+                       "para eliminar este efecto estacional."),
+                html.Code("Rem_suavizada(t) = Promedio(Rem(t-11) ... Rem(t))",
+                           className="sipa-formula"),
+            ]),
+        ], className="sipa-metodo-section"),
+
+        # 4b. Salario Real e IPC
+        html.Div([
+            html.H5("5. Salario Real e IPC"),
+
+            html.Div([
+                html.H6("Indice de Precios al Consumidor (IPC)", style={'fontWeight': '600'}),
+                html.P([
+                    "Serie mensual empalmada de IPC con base Enero 2016 = 100, que cubre el periodo "
+                    "2000-2025. El empalme utiliza series provinciales (CABA, Cordoba, San Luis) para "
+                    "cubrir el periodo 2007-2016 donde el IPC nacional (INDEC) no fue confiable. "
+                    "Fuente: ",
+                    html.A("matuteiglesias/IPC-Argentina",
+                           href="https://github.com/matuteiglesias/IPC-Argentina",
+                           target="_blank"),
+                    "."
+                ]),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Remuneracion Real (deflactada)", style={'fontWeight': '600'}),
+                html.P("La remuneracion real mide el poder adquisitivo del salario, descontando "
+                       "el efecto de la inflacion. Se calcula deflactando la remuneracion nominal "
+                       "por el IPC del mismo mes."),
+                html.Code("Rem_real(t) = (Rem_nominal(t) / IPC(t)) x 100",
+                           className="sipa-formula"),
+                html.Small("Unidad: pesos constantes de Enero 2016", style={'color': '#718096'}),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Datasets derivados", style={'fontWeight': '600'}),
+                html.Ul([
+                    html.Li([html.Strong("R1_real: "), "Remuneracion real promedio total (309 meses)"]),
+                    html.Li([html.Strong("R2_real: "), "Remuneracion real mediana total (309 meses)"]),
+                    html.Li([html.Strong("R3_real: "), "Remuneracion real promedio por sector CIIU (14 sectores x ~309 meses)"]),
+                ]),
+                html.Small("La cobertura temporal es la interseccion entre las series de remuneraciones "
+                           "(desde Ene 1995) y el IPC disponible (desde Ene 2000).",
+                           style={'color': '#718096'}),
+            ], style={'marginBottom': '1rem'}),
+
+            html.Div([
+                html.H6("Visualizacion", style={'fontWeight': '600'}),
+                html.Ul([
+                    html.Li([html.Strong("Temporal: "),
+                             "Al seleccionar Remuneracion Promedio o Mediana se muestran "
+                             "ambas series (nominal y real) en el mismo grafico. En niveles se usa "
+                             "eje dual (izq: nominal, der: real). En variaciones e indice comparten eje."]),
+                    html.Li([html.Strong("Sectorial: "),
+                             "La fuente 'Remuneracion Real' muestra el salario real por sector, "
+                             "permitiendo identificar que sectores ganan o pierden poder adquisitivo "
+                             "en sus negociaciones salariales."]),
+                ]),
             ]),
         ], className="sipa-metodo-section"),
 
         # 5. Indicadores de Empresas
         html.Div([
-            html.H5("5. Indicadores de Empresas (E1-E2)"),
+            html.H5("6. Indicadores de Empresas (E1-E2)"),
 
             html.Div([
                 html.H6("Total de Empresas (E1)", style={'fontWeight': '600'}),
@@ -159,7 +233,7 @@ def create_metodologia_layout():
 
         # 6. Indicadores de Flujos
         html.Div([
-            html.H5("6. Indicadores de Flujos de Empleo (F1-F3)"),
+            html.H5("7. Indicadores de Flujos de Empleo (F1-F3)"),
 
             html.Div([
                 html.H6("Altas y Bajas (F1)", style={'fontWeight': '600'}),
@@ -195,7 +269,7 @@ def create_metodologia_layout():
 
         # 7. Indicadores de Genero
         html.Div([
-            html.H5("7. Indicadores de Genero (G1-G2)"),
+            html.H5("8. Indicadores de Genero (G1-G2)"),
 
             html.Div([
                 html.H6("Empleo por Genero (G1)", style={'fontWeight': '600'}),
@@ -216,7 +290,7 @@ def create_metodologia_layout():
 
         # 8. Series Temporales
         html.Div([
-            html.H5("8. Series Temporales y Estacionalidad"),
+            html.H5("9. Series Temporales y Estacionalidad"),
 
             html.Div([
                 html.H6("Series con Estacionalidad (C1.1, C2.1)", style={'fontWeight': '600'}),
@@ -235,7 +309,7 @@ def create_metodologia_layout():
 
         # 9. Clasificacion CIIU
         html.Div([
-            html.H5("9. Clasificacion Industrial (CIIU)"),
+            html.H5("10. Clasificacion Industrial (CIIU)"),
             html.P("Los datos sectoriales se organizan segun la Clasificacion Industrial "
                    "Internacional Uniforme (CIIU Rev. 3):"),
             html.Table([
@@ -264,7 +338,7 @@ def create_metodologia_layout():
 
         # 10. Sistema de Alertas
         html.Div([
-            html.H5("10. Sistema de Alertas Multi-Fuente"),
+            html.H5("11. Sistema de Alertas Multi-Fuente"),
             html.P("El sistema monitorea automaticamente 5 fuentes de datos y genera alertas "
                    "en cuatro categorias:"),
 
@@ -331,13 +405,14 @@ def create_metodologia_layout():
 
         # 11. Pipeline de Datos
         html.Div([
-            html.H5("11. Pipeline de Datos"),
+            html.H5("12. Pipeline de Datos"),
             html.P("El sistema cuenta con un pipeline automatizado para mantener los datos actualizados:"),
 
             html.Div([
                 html.H6("1. Descarga", style={'fontWeight': '600'}),
                 html.Code("python scripts/download_oede.py --all", className="sipa-formula"),
-                html.P("Descarga los 7 archivos Excel desde argentina.gob.ar a data/raw/",
+                html.P("Descarga los 7 archivos Excel del OEDE desde argentina.gob.ar y el CSV de IPC "
+                       "desde GitHub a data/raw/",
                        style={'fontSize': '0.85rem'}),
             ], style={'marginBottom': '0.75rem'}),
 
@@ -345,7 +420,7 @@ def create_metodologia_layout():
                 html.H6("2. Preprocesamiento", style={'fontWeight': '600'}),
                 html.Code("python scripts/preprocess/remuneraciones_mes.py", className="sipa-formula"),
                 html.P("Cada fuente tiene su procesador que extrae hojas, limpia datos y genera CSV + Parquet. "
-                       "Disponibles: empleo_trimestral, remuneraciones_mes, empresas, flujos, genero.",
+                       "Disponibles: empleo_trimestral, remuneraciones_mes, empresas, flujos, genero, ipc.",
                        style={'fontSize': '0.85rem'}),
             ], style={'marginBottom': '0.75rem'}),
 
@@ -359,7 +434,7 @@ def create_metodologia_layout():
 
         # 12. Fuentes y Actualizacion
         html.Div([
-            html.H5("12. Fuentes y Actualizacion"),
+            html.H5("13. Fuentes y Actualizacion"),
             html.Div([
                 html.Div([
                     html.Strong("Fuente primaria: "),
@@ -377,7 +452,8 @@ def create_metodologia_layout():
                 html.Div([
                     html.Strong("Cobertura temporal: "),
                     html.Span("Empleo desde 1T 1996 | Remuneraciones desde Ene 1995 | "
-                              "Empresas desde 1996 | Flujos desde 2T 1996 | Genero desde 3T 2003")
+                              "Empresas desde 1996 | Flujos desde 2T 1996 | Genero desde 3T 2003 | "
+                              "IPC desde Ene 2000")
                 ], style={'marginBottom': '0.5rem'}),
                 html.Div([
                     html.Strong("Formatos: "),
@@ -386,9 +462,9 @@ def create_metodologia_layout():
             ]),
         ], className="sipa-metodo-section"),
 
-        # 13. Notas Tecnicas y Glosario
+        # 14. Notas Tecnicas y Glosario
         html.Div([
-            html.H5("13. Notas Tecnicas y Glosario"),
+            html.H5("14. Notas Tecnicas y Glosario"),
 
             html.H6("Notas Tecnicas", style={'fontWeight': '600', 'marginBottom': '0.5rem'}),
             html.Ul([
@@ -397,7 +473,8 @@ def create_metodologia_layout():
                 html.Li("Las series pueden tener revisiones retroactivas por parte del organismo fuente"),
                 html.Li("Valores faltantes se indican como 's.d.' en archivos fuente y se tratan como nulos"),
                 html.Li("El ajuste estacional es realizado por el organismo fuente, no por este panel"),
-                html.Li("Las remuneraciones son nominales (pesos corrientes), sin ajuste por inflacion"),
+                html.Li("Las remuneraciones nominales son en pesos corrientes. El panel tambien ofrece "
+                        "series reales deflactadas por IPC (ver seccion 5)"),
                 html.Li("La brecha salarial se calcula como diferencia porcentual sobre la remuneracion masculina"),
             ]),
 
@@ -415,6 +492,16 @@ def create_metodologia_layout():
                 html.Dd("Suma de tasas de entrada y salida; mide la dinamica del mercado laboral"),
                 html.Dt("Brecha Salarial"),
                 html.Dd("Diferencia porcentual de remuneracion entre varones y mujeres"),
+                html.Dt("IPC"),
+                html.Dd("Indice de Precios al Consumidor - mide la variacion de precios de bienes y servicios"),
+                html.Dt("Salario Real"),
+                html.Dd("Remuneracion ajustada por inflacion (deflactada por IPC), mide poder adquisitivo"),
+                html.Dt("SAC (Aguinaldo)"),
+                html.Dd("Sueldo Anual Complementario - pago obligatorio en junio y diciembre equivalente "
+                         "al 50% del mejor salario mensual del semestre"),
+                html.Dt("Deflactacion"),
+                html.Dd("Proceso de ajustar valores nominales por un indice de precios para obtener "
+                         "valores reales (a precios constantes)"),
                 html.Dt("Desestacionalizacion"),
                 html.Dd("Proceso estadistico para remover patrones estacionales recurrentes"),
                 html.Dt("X-13ARIMA-SEATS"),

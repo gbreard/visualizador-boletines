@@ -127,6 +127,33 @@ def calculate_variations(df):
     return df
 
 
+def calculate_variations_generic(df, value_col, periods_short=1, periods_yoy=12):
+    """
+    Calcula variaciones y indice base 100 para cualquier columna y frecuencia.
+
+    Args:
+        df: DataFrame con columnas Date y value_col.
+        value_col: nombre de la columna de valores (ej: 'Remuneracion', 'IPC').
+        periods_short: periodos para variacion corta (1=mensual, 1=trimestral).
+        periods_yoy: periodos para variacion interanual (12=mensual, 4=trimestral).
+
+    Returns:
+        DataFrame con columnas adicionales: var_periodo, var_yoy, index_100.
+    """
+    if value_col not in df.columns or 'Date' not in df.columns:
+        return df
+
+    df = df.copy()
+    df = df.sort_values('Date')
+    df['var_periodo'] = df[value_col].pct_change(periods=periods_short, fill_method=None) * 100
+    df['var_yoy'] = df[value_col].pct_change(periods=periods_yoy, fill_method=None) * 100
+
+    if len(df) > 0 and df[value_col].iloc[0] != 0:
+        df['index_100'] = (df[value_col] / df[value_col].iloc[0]) * 100
+
+    return df
+
+
 def get_latest_period_data(c1_df):
     """Obtiene datos del ultimo periodo disponible para KPIs."""
     if c1_df.empty or 'Date' not in c1_df.columns:

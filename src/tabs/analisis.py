@@ -29,13 +29,17 @@ TEMPORAL_VARIABLES = {
         'label': 'Remuneracion Promedio',
         'dataset': 'R1',
         'y_col': 'Remuneracion', 'y_label': 'Remuneracion promedio ($)',
-        'unit': '$', 'has_serie_base': False, 'has_metrica': False,
+        'unit': '$', 'has_serie_base': False, 'has_metrica': True,
+        'real_dataset': 'R1_real', 'real_col': 'Remuneracion_Real',
+        'real_label': 'Real (deflactado IPC)',
     },
     'remuneracion_mediana': {
         'label': 'Remuneracion Mediana',
         'dataset': 'R2',
         'y_col': 'Remuneracion', 'y_label': 'Remuneracion mediana ($)',
-        'unit': '$', 'has_serie_base': False, 'has_metrica': False,
+        'unit': '$', 'has_serie_base': False, 'has_metrica': True,
+        'real_dataset': 'R2_real', 'real_col': 'Remuneracion_Real',
+        'real_label': 'Real (deflactado IPC)',
     },
     'total_empresas': {
         'label': 'Total Empresas',
@@ -96,10 +100,16 @@ SECTORIAL_SOURCES = {
         'y_col': 'Empleo', 'y_label': 'Empleo',
     },
     'remuneracion': {
-        'label': 'Remuneracion',
+        'label': 'Remuneracion (nominal)',
         'has_nivel': False,
         'dataset': 'R3',
-        'y_col': 'Remuneracion', 'y_label': 'Remuneracion promedio ($)',
+        'y_col': 'Remuneracion', 'y_label': 'Remuneracion promedio nominal ($)',
+    },
+    'remuneracion_real': {
+        'label': 'Remuneracion Real',
+        'has_nivel': False,
+        'dataset': 'R3_real',
+        'y_col': 'Remuneracion_Real', 'y_label': 'Remuneracion real (deflactado IPC)',
     },
     'empresas': {
         'label': 'Empresas',
@@ -159,7 +169,7 @@ def create_analisis_layout():
                     id='analisis-metrica',
                     options=[
                         {'label': 'Niveles', 'value': 'niveles'},
-                        {'label': 'Var. Trim %', 'value': 'var_trim'},
+                        {'label': 'Var. Periodo %', 'value': 'var_trim'},
                         {'label': 'Var. Anual %', 'value': 'var_yoy'},
                         {'label': 'Indice', 'value': 'index'}
                     ],
@@ -180,7 +190,16 @@ def create_analisis_layout():
                     inline=True,
                     className="mt-1"
                 )
-            ], className="col-md-4", id='analisis-serie-base-wrapper')
+            ], className="col-md-3", id='analisis-serie-base-wrapper'),
+            html.Div([
+                dcc.Checklist(
+                    id='analisis-suavizado',
+                    options=[{'label': 'Suavizar (promedio movil 12m)', 'value': 'ma12'}],
+                    value=[],
+                    inline=True,
+                    className="mt-1"
+                )
+            ], className="col-md-3", id='analisis-suavizado-wrapper')
         ], className="sipa-controls row", id='analisis-controles-metrica',
            style={'margin': '0 0 1rem 0'}),
 
@@ -194,14 +213,15 @@ def register_analisis_callbacks(app):
     @app.callback(
         [Output('analisis-controles-metrica', 'style'),
          Output('analisis-metrica-wrapper', 'style'),
-         Output('analisis-serie-base-wrapper', 'style')],
+         Output('analisis-serie-base-wrapper', 'style'),
+         Output('analisis-suavizado-wrapper', 'style')],
         [Input('analisis-toggle', 'value'),
          Input('analisis-variable', 'value')]
     )
     def toggle_metrica_controls(vista, variable):
         if vista != 'temporal':
             hidden = {'display': 'none'}
-            return hidden, hidden, hidden
+            return hidden, hidden, hidden, hidden
 
         show_row = {'display': 'flex', 'margin': '0 0 1rem 0'}
         show = {}
@@ -210,7 +230,8 @@ def register_analisis_callbacks(app):
         cfg = TEMPORAL_VARIABLES.get(variable, {})
         metrica_style = show if cfg.get('has_metrica', False) else hidden
         serie_style = show if cfg.get('has_serie_base', False) else hidden
-        return show_row, metrica_style, serie_style
+        suavizado_style = show if cfg.get('real_dataset') else hidden
+        return show_row, metrica_style, serie_style, suavizado_style
 
     # Contenido principal de analisis
     @app.callback(
@@ -220,12 +241,14 @@ def register_analisis_callbacks(app):
          Input('analisis-serie-base', 'value'),
          Input('analisis-variable', 'value'),
          Input('dd-fecha-desde', 'value'),
-         Input('dd-fecha-hasta', 'value')]
+         Input('dd-fecha-hasta', 'value'),
+         Input('analisis-suavizado', 'value')]
     )
-    def update_analisis(vista, metrica, serie_base, variable, fecha_desde, fecha_hasta):
+    def update_analisis(vista, metrica, serie_base, variable, fecha_desde, fecha_hasta, suavizado):
         if vista == 'temporal':
+            smooth = suavizado and 'ma12' in suavizado
             return _render_temporal(variable or 'empleo', metrica, serie_base,
-                                    fecha_desde, fecha_hasta)
+                                    fecha_desde, fecha_hasta, smooth=smooth)
         elif vista == 'sectorial':
             return _render_sectorial(fecha_desde, fecha_hasta)
         elif vista == 'tamaño':
@@ -233,7 +256,7 @@ def register_analisis_callbacks(app):
         return empty_state("Vista no disponible")
 
 
-def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta):
+def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta, smooth=False):
     """Sub-vista temporal con selector de variable multi-fuente."""
     cfg = TEMPORAL_VARIABLES.get(variable)
     if not cfg:
@@ -258,14 +281,18 @@ def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta):
     group_col = cfg.get('group_col')
     y_label = cfg['y_label']
 
-    # For empleo with metrica
+    # For variables with metrica
     if cfg.get('has_metrica') and metrica != 'niveles':
         y_col_map = {
-            'var_trim': ('var_trim', 'Variacion trimestral (%)'),
+            'var_trim': ('var_periodo', 'Variacion periodo a periodo (%)'),
             'var_yoy': ('var_yoy', 'Variacion interanual (%)'),
             'index': ('index_100', 'Indice base 100'),
         }
         y_col, y_label = y_col_map.get(metrica, (cfg['y_col'], y_label))
+        # Retrocompatibilidad: empleo usa var_trim en vez de var_periodo
+        if y_col == 'var_periodo' and y_col not in df.columns and 'var_trim' in df.columns:
+            y_col = 'var_trim'
+            y_label = 'Variacion trimestral (%)'
     else:
         y_col = cfg['y_col']
 
@@ -296,26 +323,63 @@ def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta):
             ))
     else:
         # Single series
+        has_real = 'real_dataset' in cfg
+        use_dual_axis = has_real and metrica == 'niveles' and not smooth
+
         if isinstance(y_col, str) and y_col in df.columns:
+            # Aplicar suavizado MA(12) si corresponde
+            nom_y_vals = df[y_col]
+            if smooth and has_real:
+                nom_y_vals = df[y_col].rolling(window=12, min_periods=6).mean()
+
+            nom_label = 'Nominal' if has_real else cfg['label']
+            if smooth and has_real:
+                nom_label = 'Nominal (MA 12m)'
             fig.add_trace(go.Scatter(
-                x=df['Date'], y=df[y_col],
+                x=df['Date'], y=nom_y_vals,
                 mode='lines+markers',
-                name=cfg['label'],
+                name=nom_label,
                 line=dict(color=COLORS['primary_light'], width=2),
                 marker=dict(size=4)
             ))
 
-            # Moving average (adapt window to frequency)
-            ma_window = 4 if cfg.get('unit') != '$' else 6
-            df['_MA'] = df[y_col].rolling(window=ma_window, min_periods=1).mean()
-            ma_label = f'Promedio movil ({ma_window})'
-            fig.add_trace(go.Scatter(
-                x=df['Date'], y=df['_MA'],
-                mode='lines', name=ma_label,
-                line=dict(color=COLORS['warning'], width=2, dash='dash')
-            ))
+            # Serie real (deflactada por IPC) si existe
+            if has_real:
+                df_real = cache.get(cfg['real_dataset'])
+                df_real = filter_by_dates(df_real, fecha_desde, fecha_hasta)
+                if not df_real.empty:
+                    # Determinar columna real segun metrica
+                    if metrica == 'niveles':
+                        real_y = cfg['real_col']
+                    else:
+                        real_y = y_col  # var_periodo, var_yoy, index_100 existen en ambos
+                    if real_y in df_real.columns:
+                        real_y_vals = df_real[real_y]
+                        real_label = cfg['real_label']
+                        if smooth:
+                            real_y_vals = df_real[real_y].rolling(window=12, min_periods=6).mean()
+                            real_label = 'Real (MA 12m)'
+                        fig.add_trace(go.Scatter(
+                            x=df_real['Date'], y=real_y_vals,
+                            mode='lines+markers',
+                            name=real_label,
+                            line=dict(color=COLORS['success'], width=2),
+                            marker=dict(size=4),
+                            yaxis='y2' if use_dual_axis else 'y'
+                        ))
 
-    fig.update_layout(
+            if not has_real:
+                # Moving average solo para series sin comparacion real
+                ma_window = 4 if cfg.get('unit') != '$' else 6
+                df['_MA'] = df[y_col].rolling(window=ma_window, min_periods=1).mean()
+                ma_label = f'Promedio movil ({ma_window})'
+                fig.add_trace(go.Scatter(
+                    x=df['Date'], y=df['_MA'],
+                    mode='lines', name=ma_label,
+                    line=dict(color=COLORS['warning'], width=2, dash='dash')
+                ))
+
+    layout_opts = dict(
         title=f'Evolucion temporal - {y_label}',
         xaxis_title='Periodo',
         yaxis_title=y_label,
@@ -323,6 +387,16 @@ def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta):
         showlegend=True,
         height=500
     )
+
+    # Eje Y2 para serie real en niveles (escalas distintas)
+    if 'real_dataset' in cfg and metrica == 'niveles':
+        layout_opts['yaxis'] = dict(title='Nominal ($)', side='left')
+        layout_opts['yaxis2'] = dict(
+            title='Real (deflactado IPC)', side='right',
+            overlaying='y', showgrid=False
+        )
+
+    fig.update_layout(**layout_opts)
     fig.update_layout(**PLOTLY_TEMPLATE['layout'])
 
     # Summary stats

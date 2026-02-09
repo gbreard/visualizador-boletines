@@ -125,6 +125,8 @@ PARQUET_MAPPING = {
     'G1': 'g1.parquet',
     'G2': 'g2.parquet',
     'G3': 'g3.parquet',
+    # IPC
+    'IPC': 'ipc.parquet',
 }
 
 # Datasets de empleo trimestral (fuente original)
@@ -142,7 +144,10 @@ FLUJOS_KEYS = ['F1', 'F2', 'F3']
 # Datasets de genero
 GENERO_KEYS = ['G1', 'G2', 'G3']
 
-ALL_DATASET_KEYS = EMPLEO_KEYS + REMUNERACIONES_KEYS + EMPRESAS_KEYS + FLUJOS_KEYS + GENERO_KEYS
+# IPC
+IPC_KEYS = ['IPC']
+
+ALL_DATASET_KEYS = EMPLEO_KEYS + REMUNERACIONES_KEYS + EMPRESAS_KEYS + FLUJOS_KEYS + GENERO_KEYS + IPC_KEYS
 
 DATASET_LABELS = {
     'C1.1': 'C1.1 - Serie temporal con estacionalidad',
@@ -169,6 +174,7 @@ DATASET_LABELS = {
     'G1': 'G1 - Empleo por genero total',
     'G2': 'G2 - Brecha salarial por genero',
     'G3': 'G3 - Empleo por genero y sector',
+    'IPC': 'IPC - Indice de precios al consumidor',
 }
 
 # Mapeo de sector CIIU letra a descripcion (para remuneraciones)
@@ -334,5 +340,11 @@ DATASET_DESCRIPTIONS = {
         'description': 'Empleo por sexo desagregado por sector de actividad economica.',
         'columns': 'Periodo, Sexo, Sector, Empleo',
         'frequency': 'Trimestral',
+    },
+    'IPC': {
+        'title': 'Indice de Precios al Consumidor',
+        'description': 'IPC mensual empalmado (base Ene 2016=100). Serie continua 2000-2025 con empalme usando IPC provincial para cubrir el periodo 2007-2016.',
+        'columns': 'Periodo, IPC',
+        'frequency': 'Mensual',
     },
 }

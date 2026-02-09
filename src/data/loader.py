@@ -7,7 +7,7 @@ import os
 import logging
 import pandas as pd
 from src.config import DATA_DIR, OPTIMIZED_DIR, PARQUET_MAPPING, ALL_DATASET_KEYS
-from src.data.processing import process_periods, calculate_variations
+from src.data.processing import process_periods, calculate_variations, calculate_variations_generic
 
 logger = logging.getLogger(__name__)
 
@@ -57,9 +57,76 @@ def load_from_files():
 
         data[key] = df
 
+    # Post-procesamiento: variaciones mensuales y salario real
+    _compute_monthly_variations(data)
+
     loaded = [k for k in data.keys()]
     logger.info(f"Datasets cargados: {len(loaded)} ({', '.join(loaded)})")
     return data
+
+
+def _compute_monthly_variations(data):
+    """Calcula variaciones mensuales para R1, R2, IPC y genera datasets de salario real."""
+    # Variaciones para IPC
+    if 'IPC' in data:
+        data['IPC'] = calculate_variations_generic(data['IPC'], 'IPC', periods_short=1, periods_yoy=12)
+        logger.info("  IPC: variaciones mensuales calculadas")
+
+    # Variaciones para R1, R2 (remuneracion nominal)
+    for key in ('R1', 'R2'):
+        if key in data:
+            data[key] = calculate_variations_generic(data[key], 'Remuneracion', periods_short=1, periods_yoy=12)
+            logger.info(f"  {key}: variaciones mensuales calculadas")
+
+    # Salario real: deflactar R1/R2 por IPC
+    if 'IPC' not in data:
+        return
+
+    ipc_df = data['IPC']
+    if 'Date' not in ipc_df.columns:
+        return
+
+    for key_nom, key_real in [('R1', 'R1_real'), ('R2', 'R2_real')]:
+        if key_nom not in data:
+            continue
+        df_nom = data[key_nom]
+        if 'Date' not in df_nom.columns:
+            continue
+
+        # Merge por Date
+        df_merged = df_nom.merge(
+            ipc_df[['Date', 'IPC']],
+            on='Date',
+            how='inner'
+        )
+
+        if df_merged.empty or df_merged['IPC'].isna().all():
+            logger.warning(f"  {key_real}: sin datos tras merge con IPC")
+            continue
+
+        # Deflactar: salario_real = salario_nominal / IPC * 100
+        df_merged['Remuneracion_Real'] = df_merged['Remuneracion'] / df_merged['IPC'] * 100
+
+        # Calcular variaciones del salario real
+        df_merged = calculate_variations_generic(
+            df_merged, 'Remuneracion_Real', periods_short=1, periods_yoy=12
+        )
+
+        data[key_real] = df_merged
+        logger.info(f"  {key_real}: {len(df_merged)} filas (salario real calculado)")
+
+    # Salario real sectorial: deflactar R3 por IPC
+    if 'R3' in data and 'Date' in data['R3'].columns:
+        df_r3 = data['R3']
+        df_merged = df_r3.merge(
+            ipc_df[['Date', 'IPC']],
+            on='Date',
+            how='inner'
+        )
+        if not df_merged.empty and not df_merged['IPC'].isna().all():
+            df_merged['Remuneracion_Real'] = df_merged['Remuneracion'] / df_merged['IPC'] * 100
+            data['R3_real'] = df_merged
+            logger.info(f"  R3_real: {len(df_merged)} filas (salario real por sector)")
 
 
 def load_all_data():

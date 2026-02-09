@@ -73,6 +73,12 @@ OEDE_FILES = {
         'description': 'Empleo por genero',
         'frequency': 'quarterly',
     },
+    'ipc': {
+        'url': 'https://raw.githubusercontent.com/matuteiglesias/IPC-Argentina/main/data/info/indice_precios_M.csv',
+        'filename': 'ipc_mensual.csv',
+        'description': 'IPC mensual empalmado (base Ene 2016=100)',
+        'frequency': 'monthly',
+    },
 }
 
 
