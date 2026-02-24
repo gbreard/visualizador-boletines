@@ -8,6 +8,7 @@ from datetime import datetime
 from flask import Blueprint, request, redirect, make_response
 from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash
+from sqlalchemy.orm import make_transient
 
 from src.auth.manager import get_db_session
 from src.auth.models import User
@@ -237,12 +238,16 @@ def login():
         user.last_login = datetime.utcnow()
         session.commit()
 
-        # Detach user from session for flask-login
-        session.expunge(user)
+        # Force load all attributes, then fully detach from session
+        _ = user.id, user.email, user.nombre, user.role, user.is_active
+        make_transient(user)
+        session.close()
+
         login_user(user)
         logger.info("Login exitoso: %s (%s)", user.email, user.role)
-    finally:
+    except Exception:
         session.close()
+        raise
 
     return redirect('/')
 

@@ -6,7 +6,7 @@ import os
 import logging
 
 from flask_login import LoginManager
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, make_transient
 
 from src.auth.models import Base, User
 
@@ -42,7 +42,9 @@ def init_auth(flask_app, engine):
         with Session(_engine, expire_on_commit=False) as session:
             user = session.get(User, int(user_id))
             if user:
-                session.expunge(user)
+                # Force load all column attributes before detaching
+                _ = user.id, user.email, user.nombre, user.role, user.is_active
+                make_transient(user)
             return user
 
     # Proteger rutas: redirigir a login si no autenticado
