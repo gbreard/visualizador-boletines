@@ -11,6 +11,7 @@ from src.config import COLORS, PLOTLY_TEMPLATE, PLOTLY_COLOR_SEQUENCE, SECTOR_CI
 from src.data.cache import cache
 from src.data.processing import parse_period_string
 from src.layout.components import create_kpi_card, create_section_card, empty_state
+from src.layout.feedback_components import graph_with_feedback
 
 
 def _filter_remuneraciones(df, meses_desde, meses_hasta):
@@ -111,12 +112,16 @@ def create_remuneraciones_layout():
         html.Div([
             html.Div([
                 create_section_card("Evolucion de la Remuneracion", [
-                    dcc.Graph(id='rem-evolution')
+                    graph_with_feedback(
+                        dcc.Graph(id='rem-evolution'),
+                        'rem-evolution', 'Evolucion Remuneracion')
                 ])
             ], className="col-md-7"),
             html.Div([
                 create_section_card("Remuneracion por Sector (ultimo mes)", [
-                    dcc.Graph(id='rem-sector-bars')
+                    graph_with_feedback(
+                        dcc.Graph(id='rem-sector-bars'),
+                        'rem-sector-bars', 'Remuneracion por Sector')
                 ])
             ], className="col-md-5"),
         ], className="row mb-4"),

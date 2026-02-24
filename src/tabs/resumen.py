@@ -10,6 +10,7 @@ from src.config import COLORS, SECTOR_COLORS, PLOTLY_TEMPLATE
 from src.data.cache import cache
 from src.data.processing import get_latest_period_data, filter_by_dates, get_latest_period_str
 from src.layout.components import create_kpi_card, create_section_card
+from src.layout.feedback_components import graph_with_feedback
 
 
 def _get_sector_descriptions():
@@ -39,12 +40,16 @@ def create_resumen_layout():
         html.Div([
             html.Div([
                 create_section_card("Empleo por Sector", [
-                    dcc.Graph(id='resumen-bars')
+                    graph_with_feedback(
+                        dcc.Graph(id='resumen-bars'),
+                        'resumen-bars', 'Empleo por Sector')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Evolucion del Empleo Total", [
-                    dcc.Graph(id='resumen-sparkline')
+                    graph_with_feedback(
+                        dcc.Graph(id='resumen-sparkline'),
+                        'resumen-sparkline', 'Evolucion Empleo Total')
                 ])
             ], className="col-md-6")
         ], className="row mb-4"),

@@ -11,6 +11,7 @@ from src.config import COLORS, PLOTLY_TEMPLATE, PLOTLY_COLOR_SEQUENCE, SECTOR_CI
 from src.data.cache import cache
 from src.data.processing import filter_by_dates
 from src.layout.components import create_kpi_card, create_section_card, empty_state
+from src.layout.feedback_components import graph_with_feedback
 
 
 def _sector_label(code):
@@ -92,12 +93,16 @@ def create_flujos_layout():
         html.Div([
             html.Div([
                 create_section_card("Altas vs Bajas de Empleo", [
-                    dcc.Graph(id='flu-altas-bajas')
+                    graph_with_feedback(
+                        dcc.Graph(id='flu-altas-bajas'),
+                        'flu-altas-bajas', 'Altas vs Bajas')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Creacion Neta de Empleo", [
-                    dcc.Graph(id='flu-neta')
+                    graph_with_feedback(
+                        dcc.Graph(id='flu-neta'),
+                        'flu-neta', 'Creacion Neta')
                 ])
             ], className="col-md-6"),
         ], className="row mb-4"),
@@ -105,12 +110,16 @@ def create_flujos_layout():
         html.Div([
             html.Div([
                 create_section_card("Tasas de Rotacion", [
-                    dcc.Graph(id='flu-rotacion')
+                    graph_with_feedback(
+                        dcc.Graph(id='flu-rotacion'),
+                        'flu-rotacion', 'Tasas Rotacion')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Creacion Neta por Sector (ultimo trimestre)", [
-                    dcc.Graph(id='flu-sector')
+                    graph_with_feedback(
+                        dcc.Graph(id='flu-sector'),
+                        'flu-sector', 'Creacion Neta por Sector')
                 ])
             ], className="col-md-6"),
         ], className="row"),

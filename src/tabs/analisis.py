@@ -13,6 +13,7 @@ from src.config import COLORS, SECTOR_COLORS, PLOTLY_TEMPLATE, SECTOR_CIIU_LETRA
 from src.data.cache import cache
 from src.data.processing import filter_by_dates, process_periods, calculate_variations, get_latest_period_str
 from src.layout.components import empty_state, create_section_card
+from src.layout.feedback_components import graph_with_feedback
 
 # ---------------------------------------------------------------------------
 # Config: Temporal variables
@@ -424,7 +425,9 @@ def _render_temporal(variable, metrica, serie_base, fecha_desde, fecha_hasta, sm
 
     return html.Div([
         create_section_card(f"Serie Temporal - {y_label}", [
-            dcc.Graph(id='analisis-temporal-chart', figure=fig),
+            graph_with_feedback(
+                dcc.Graph(id='analisis-temporal-chart', figure=fig),
+                'analisis-temporal-chart', 'Serie Temporal'),
         ]),
         html.Div(stats_children)
     ])
@@ -482,12 +485,16 @@ def _render_sectorial(fecha_desde, fecha_hasta):
         html.Div([
             html.Div([
                 create_section_card("Dato por Sector (ultimo periodo)", [
-                    dcc.Graph(id='bars-ultimo', style={'height': '400px'})
+                    graph_with_feedback(
+                        dcc.Graph(id='bars-ultimo', style={'height': '400px'}),
+                        'bars-ultimo', 'Dato por Sector')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Evolucion Temporal", [
-                    dcc.Graph(id='ts-sector', style={'height': '400px'})
+                    graph_with_feedback(
+                        dcc.Graph(id='ts-sector', style={'height': '400px'}),
+                        'ts-sector', 'Evolucion Sectorial')
                 ])
             ], className="col-md-6")
         ], className="row mb-3"),
@@ -533,12 +540,16 @@ def _render_tamaño(fecha_desde, fecha_hasta):
         html.Div([
             html.Div([
                 create_section_card("Composicion por Tamano", [
-                    dcc.Graph(id='stack-c5', style={'height': '400px'})
+                    graph_with_feedback(
+                        dcc.Graph(id='stack-c5', style={'height': '400px'}),
+                        'stack-c5', 'Composicion por Tamano')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Evolucion por Tamano", [
-                    dcc.Graph(id='ts-c5', style={'height': '400px'})
+                    graph_with_feedback(
+                        dcc.Graph(id='ts-c5', style={'height': '400px'}),
+                        'ts-c5', 'Evolucion por Tamano')
                 ])
             ], className="col-md-6")
         ], className="row mb-3"),

@@ -11,6 +11,7 @@ from src.config import COLORS, PLOTLY_TEMPLATE, PLOTLY_COLOR_SEQUENCE
 from src.data.cache import cache
 from src.data.processing import filter_by_dates
 from src.layout.components import create_kpi_card, create_section_card, empty_state
+from src.layout.feedback_components import graph_with_feedback
 
 
 def create_genero_layout():
@@ -86,19 +87,25 @@ def create_genero_layout():
         html.Div([
             html.Div([
                 create_section_card("Evolucion por Genero", [
-                    dcc.Graph(id='gen-evolution')
+                    graph_with_feedback(
+                        dcc.Graph(id='gen-evolution'),
+                        'gen-evolution', 'Evolucion por Genero')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Composicion por Genero", [
-                    dcc.Graph(id='gen-participacion')
+                    graph_with_feedback(
+                        dcc.Graph(id='gen-participacion'),
+                        'gen-participacion', 'Composicion por Genero')
                 ])
             ], className="col-md-6"),
         ], className="row mb-4"),
 
         html.Div([
             create_section_card("Brecha Salarial de Genero", [
-                dcc.Graph(id='gen-brecha')
+                graph_with_feedback(
+                    dcc.Graph(id='gen-brecha'),
+                    'gen-brecha', 'Brecha Salarial')
             ])
         ]),
     ])

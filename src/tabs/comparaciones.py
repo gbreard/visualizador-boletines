@@ -11,6 +11,7 @@ from src.config import COLORS, PLOTLY_TEMPLATE, SECTOR_CIIU_LETRA
 from src.data.cache import cache
 from src.data.processing import parse_period_string
 from src.layout.components import empty_state, create_section_card
+from src.layout.feedback_components import graph_with_feedback
 
 # Configuracion de variables comparables
 VARIABLES = {
@@ -401,7 +402,9 @@ def register_comparaciones_callbacks(app):
         return "", html.Div([
             resumen,
             create_section_card(f"{title}: {p_posterior} vs {p_anterior}", [
-                dcc.Graph(figure=fig),
+                graph_with_feedback(
+                    dcc.Graph(id='comp-result-chart', figure=fig),
+                    'comp-result-chart', 'Comparacion entre Periodos'),
             ]),
             create_section_card("Tabla de Comparacion", [tabla])
         ])

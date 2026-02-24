@@ -11,6 +11,7 @@ from src.config import COLORS, PLOTLY_TEMPLATE, PLOTLY_COLOR_SEQUENCE, SECTOR_CI
 from src.data.cache import cache
 from src.data.processing import parse_period_string
 from src.layout.components import create_kpi_card, create_section_card, empty_state
+from src.layout.feedback_components import graph_with_feedback
 
 
 def _filter_anual(df, anio_desde, anio_hasta):
@@ -111,19 +112,25 @@ def create_empresas_layout():
         html.Div([
             html.Div([
                 create_section_card("Evolucion del Total de Empresas", [
-                    dcc.Graph(id='emp-evolution')
+                    graph_with_feedback(
+                        dcc.Graph(id='emp-evolution'),
+                        'emp-evolution', 'Total Empresas')
                 ])
             ], className="col-md-6"),
             html.Div([
                 create_section_card("Empresas por Sector (ultimo anio)", [
-                    dcc.Graph(id='emp-sector')
+                    graph_with_feedback(
+                        dcc.Graph(id='emp-sector'),
+                        'emp-sector', 'Empresas por Sector')
                 ])
             ], className="col-md-6"),
         ], className="row mb-4"),
 
         html.Div([
             create_section_card("Evolucion por Sector Seleccionado", [
-                dcc.Graph(id='emp-sector-evo')
+                graph_with_feedback(
+                    dcc.Graph(id='emp-sector-evo'),
+                    'emp-sector-evo', 'Evolucion por Sector')
             ])
         ]),
     ])

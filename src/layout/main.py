@@ -4,6 +4,7 @@ Layout principal del dashboard: 6 tabs + header institucional + footer.
 
 from dash import html, dcc
 from src.data.cache import cache
+from src.layout.feedback_components import create_feedback_modal
 
 
 def create_main_layout():
@@ -75,6 +76,12 @@ def create_main_layout():
             children=html.Div(id='tab-content', className="container-fluid",
                                style={'padding': '1.5rem'})
         ),
+
+        # Store de contexto activo para feedback
+        dcc.Store(id="active-context", data={}),
+
+        # Modal de feedback (unico, compartido por todos los graficos)
+        create_feedback_modal(),
 
         # Footer institucional
         html.Div([
