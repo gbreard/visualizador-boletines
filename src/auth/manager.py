@@ -39,7 +39,7 @@ def init_auth(flask_app, engine):
 
     @_login_manager.user_loader
     def load_user(user_id):
-        with Session(_engine) as session:
+        with Session(_engine, expire_on_commit=False) as session:
             user = session.get(User, int(user_id))
             if user:
                 session.expunge(user)
@@ -84,7 +84,7 @@ def get_db_session():
     """Retorna una nueva SQLAlchemy Session. Caller debe cerrarla."""
     if _engine is None:
         return None
-    return Session(_engine)
+    return Session(_engine, expire_on_commit=False)
 
 
 def auth_enabled():
