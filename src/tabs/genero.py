@@ -82,7 +82,9 @@ def create_genero_layout():
         ], style={'padding': '0.75rem 0', 'marginBottom': '1rem',
                   'borderBottom': f"1px solid {COLORS['border']}"}),
 
-        html.Div(id='gen-kpis', className="row mb-4"),
+        graph_with_feedback(
+            html.Div(id='gen-kpis', className="row mb-4"),
+            'gen-kpis', 'KPIs de Genero'),
 
         html.Div([
             html.Div([

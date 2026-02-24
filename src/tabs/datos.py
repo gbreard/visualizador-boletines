@@ -11,6 +11,7 @@ from src.config import (
 from src.data.cache import cache
 from src.data.processing import filter_by_dates
 from src.layout.components import empty_state, create_section_card
+from src.layout.feedback_components import graph_with_feedback
 
 # Categorias de fuentes
 SOURCE_CATEGORIES = {
@@ -237,6 +238,6 @@ def register_datos_callbacks(app):
                                style={'color': COLORS['text_muted'], 'display': 'block',
                                       'marginBottom': '0.75rem'})
                 ]),
-                tabla
+                graph_with_feedback(tabla, 'datos-raw-table', 'Tabla de Datos')
             ]
         )

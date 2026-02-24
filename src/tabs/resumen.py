@@ -29,12 +29,16 @@ def create_resumen_layout():
         html.Div(id='resumen-subtitle', style={'color': '#718096', 'marginBottom': '1rem'}),
 
         # Fila de KPIs - Empleo
-        html.Div(id='resumen-kpis', className="row mb-3",
-                 style={'gap': '0'}),
+        graph_with_feedback(
+            html.Div(id='resumen-kpis', className="row mb-3",
+                     style={'gap': '0'}),
+            'resumen-kpis', 'KPIs de Empleo'),
 
         # Fila de KPIs - Multi-fuente
-        html.Div(id='resumen-kpis-multi', className="row mb-4",
-                 style={'gap': '0'}),
+        graph_with_feedback(
+            html.Div(id='resumen-kpis-multi', className="row mb-4",
+                     style={'gap': '0'}),
+            'resumen-kpis-multi', 'KPIs Multi-fuente'),
 
         # Fila de graficos
         html.Div([

@@ -499,7 +499,9 @@ def _render_sectorial(fecha_desde, fecha_hasta):
             ], className="col-md-6")
         ], className="row mb-3"),
 
-        html.Div(id='tbl-sector-container', className="col-md-12")
+        graph_with_feedback(
+            html.Div(id='tbl-sector-container', className="col-md-12"),
+            'tbl-sector-container', 'Tabla Detalle Sectorial')
     ])
 
 
@@ -554,7 +556,9 @@ def _render_tamaño(fecha_desde, fecha_hasta):
             ], className="col-md-6")
         ], className="row mb-3"),
 
-        html.Div(id='tbl-c5-container', className="mt-3")
+        graph_with_feedback(
+            html.Div(id='tbl-c5-container', className="mt-3"),
+            'tbl-c5-container', 'Tabla Detalle por Tamano')
     ])
 
 

@@ -88,7 +88,9 @@ def create_flujos_layout():
         ], style={'padding': '0.75rem 0', 'marginBottom': '1rem',
                   'borderBottom': f"1px solid {COLORS['border']}"}),
 
-        html.Div(id='flu-kpis', className="row mb-4"),
+        graph_with_feedback(
+            html.Div(id='flu-kpis', className="row mb-4"),
+            'flu-kpis', 'KPIs de Flujos de Empleo'),
 
         html.Div([
             html.Div([

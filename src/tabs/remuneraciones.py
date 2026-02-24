@@ -107,7 +107,9 @@ def create_remuneraciones_layout():
         ], style={'padding': '0.75rem 0', 'marginBottom': '1rem',
                   'borderBottom': f"1px solid {COLORS['border']}"}),
 
-        html.Div(id='rem-kpis', className="row mb-4"),
+        graph_with_feedback(
+            html.Div(id='rem-kpis', className="row mb-4"),
+            'rem-kpis', 'KPIs de Remuneraciones'),
 
         html.Div([
             html.Div([
@@ -128,7 +130,9 @@ def create_remuneraciones_layout():
 
         html.Div([
             create_section_card("Detalle por Sector", [
-                html.Div(id='rem-table-container')
+                graph_with_feedback(
+                    html.Div(id='rem-table-container'),
+                    'rem-detail-table', 'Tabla Detalle Remuneraciones')
             ])
         ]),
     ])

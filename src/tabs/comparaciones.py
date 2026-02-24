@@ -406,5 +406,7 @@ def register_comparaciones_callbacks(app):
                     dcc.Graph(id='comp-result-chart', figure=fig),
                     'comp-result-chart', 'Comparacion entre Periodos'),
             ]),
-            create_section_card("Tabla de Comparacion", [tabla])
+            create_section_card("Tabla de Comparacion", [
+                graph_with_feedback(tabla, 'comp-result-table', 'Tabla de Comparacion')
+            ])
         ])
