@@ -40,7 +40,10 @@ def init_auth(flask_app, engine):
     @_login_manager.user_loader
     def load_user(user_id):
         with Session(_engine) as session:
-            return session.get(User, int(user_id))
+            user = session.get(User, int(user_id))
+            if user:
+                session.expunge(user)
+            return user
 
     # Proteger rutas: redirigir a login si no autenticado
     PUBLIC_PATHS = {'/login', '/logout', '/_favicon.ico'}
