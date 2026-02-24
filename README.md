@@ -34,8 +34,6 @@ pip install -r requirements.txt
 python dashboard.py
 ```
 
-Acceder en: http://localhost:8050
-
 ## 📁 Estructura
 
 ```
