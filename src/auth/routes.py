@@ -8,9 +8,8 @@ from datetime import datetime
 from flask import Blueprint, request, redirect, make_response
 from flask_login import login_user, logout_user
 from werkzeug.security import check_password_hash
-from sqlalchemy.orm import Session
 
-from src.auth.manager import _engine
+from src.auth.manager import get_db_session
 from src.auth.models import User
 
 logger = logging.getLogger(__name__)
@@ -220,7 +219,8 @@ def login():
         html = LOGIN_HTML.format(error_html=error, email_value=email)
         return make_response(html), 401
 
-    with Session(_engine) as session:
+    session = get_db_session()
+    try:
         user = session.query(User).filter_by(email=email).first()
 
         if not user or not check_password_hash(user.password_hash, password):
@@ -241,6 +241,8 @@ def login():
         session.expunge(user)
         login_user(user)
         logger.info("Login exitoso: %s (%s)", user.email, user.role)
+    finally:
+        session.close()
 
     return redirect('/')
 
