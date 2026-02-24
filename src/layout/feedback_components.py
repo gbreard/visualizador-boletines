@@ -1,5 +1,6 @@
 """
 Componentes UI para el sistema de feedback por grafico.
+Visibilidad de botones controlada por CSS (clase sipa-role-admin/viewer en el root).
 """
 
 from dash import html, dcc
@@ -9,34 +10,16 @@ import dash_bootstrap_components as dbc
 GRAPH_LABELS = {}
 
 
-def _is_feedback_enabled():
-    """Verifica en tiempo real si el usuario actual puede dar feedback."""
-    try:
-        from src.auth.manager import auth_enabled
-        if not auth_enabled():
-            return True  # Dev mode: siempre habilitado
-        from flask_login import current_user
-        return current_user.is_authenticated and current_user.is_admin
-    except Exception:
-        return True  # Fallback: habilitado
-
-
-def set_feedback_enabled(enabled):
-    """Legacy no-op, kept for backwards compatibility."""
-    pass
-
-
 def graph_with_feedback(children, graph_id, graph_label):
     """
     Envuelve un componente (tipicamente dcc.Graph) en un div relativo
     con un boton de feedback absoluto en la esquina superior derecha.
 
-    Si feedback esta deshabilitado, retorna solo el children sin wrapper.
+    La visibilidad del boton se controla via CSS:
+    - .sipa-role-admin .sipa-feedback-btn → visible
+    - .sipa-role-viewer .sipa-feedback-btn → display:none
     """
     GRAPH_LABELS[graph_id] = graph_label
-
-    if not _is_feedback_enabled():
-        return children
 
     return html.Div([
         children,

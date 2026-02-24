@@ -422,8 +422,13 @@ body {
 }
 
 /* Prevent Plotly modebar from overlapping the feedback button */
-.js-plotly-plot .plotly .modebar {
+.sipa-role-admin .js-plotly-plot .plotly .modebar {
     right: 36px !important;
+}
+
+/* Role-based visibility: hide feedback buttons for viewers */
+.sipa-role-viewer .sipa-feedback-btn {
+    display: none !important;
 }
 
 /* --- Header inner layout (user info) --- */

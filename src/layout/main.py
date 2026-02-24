@@ -4,7 +4,7 @@ Layout principal del dashboard: tabs + header institucional + footer.
 
 from dash import html, dcc
 from src.data.cache import cache
-from src.layout.feedback_components import create_feedback_modal, set_feedback_enabled
+from src.layout.feedback_components import create_feedback_modal
 
 
 def create_main_layout(role='admin', user_name=''):
@@ -19,9 +19,7 @@ def create_main_layout(role='admin', user_name=''):
     last_period = cache.last_period
 
     is_admin = role == 'admin'
-
-    # Habilitar/deshabilitar feedback buttons segun rol
-    set_feedback_enabled(is_admin)
+    role_class = 'sipa-role-admin' if is_admin else 'sipa-role-viewer'
 
     # Tabs base
     tabs = [
@@ -52,10 +50,7 @@ def create_main_layout(role='admin', user_name=''):
             ], className="sipa-user-info")
         ]
 
-    # Componentes que solo van para admin
-    admin_components = []
-    if is_admin:
-        admin_components.append(create_feedback_modal())
+    # Feedback modal (siempre incluido, visibilidad controlada por CSS)
 
     return html.Div([
         # Header institucional
@@ -116,8 +111,8 @@ def create_main_layout(role='admin', user_name=''):
         # Store de info de usuario
         dcc.Store(id="user-info", data={"role": role, "name": user_name}),
 
-        # Modal de feedback (solo admin)
-        *admin_components,
+        # Modal de feedback
+        create_feedback_modal(),
 
         # Footer institucional
         html.Div([
@@ -127,4 +122,4 @@ def create_main_layout(role='admin', user_name=''):
             html.Span(" | ", style={'margin': '0 0.5rem'}),
             html.Span("Republica Argentina"),
         ], className="sipa-footer")
-    ], style={'backgroundColor': '#F7FAFC', 'minHeight': '100vh'})
+    ], className=role_class, style={'backgroundColor': '#F7FAFC', 'minHeight': '100vh'})
