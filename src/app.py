@@ -9,10 +9,14 @@ import logging
 # Asegurar que el directorio padre este en el path para imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from dash import Dash
 
 from src.data.cache import cache
 from src.data.loader import load_all_data
+from src.data.db import get_engine
 from src.layout.main import create_main_layout
 from src.callbacks.register import register_all_callbacks
 
@@ -34,14 +38,36 @@ app = Dash(
 )
 app.title = "SIPA - Panel de Monitoreo de Empleo Registrado"
 
+# Inicializar auth condicionalmente (solo si hay DATABASE_URL)
+engine = get_engine()
+if engine:
+    from src.auth.manager import init_auth, auth_enabled
+    from src.auth.routes import auth_bp
+    init_auth(app.server, engine)
+    app.server.register_blueprint(auth_bp)
+    logger.info("Auth habilitado con base de datos")
+else:
+    logger.info("Auth deshabilitado (sin DATABASE_URL) - modo desarrollo")
+
 # Cargar datos una vez al inicio
 logger.info("Cargando datos...")
 cache.load(load_all_data)
 logger.info(f"Datos cargados: {cache.data_keys}")
 logger.info(f"Periodos: {len(cache.periods)} ({cache.periods[0] if cache.periods else 'N/A'} - {cache.last_period})")
 
-# Layout
-app.layout = create_main_layout()
+
+# Layout dinamico segun usuario autenticado
+def serve_layout():
+    from src.auth.manager import auth_enabled
+    if auth_enabled():
+        from flask_login import current_user
+        if current_user.is_authenticated:
+            return create_main_layout(role=current_user.role, user_name=current_user.nombre)
+    # Dev mode: sin auth, acceso completo
+    return create_main_layout(role='admin', user_name='Desarrollo')
+
+
+app.layout = serve_layout
 
 # Registrar todos los callbacks
 register_all_callbacks(app)

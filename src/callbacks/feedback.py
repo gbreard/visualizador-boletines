@@ -20,10 +20,6 @@ def register_feedback_callbacks(app):
     """Registra todos los callbacks de feedback."""
 
     # ── Grupo A: Context tracking ────────────────────────────────────
-    # Un solo callback que captura tab + fechas globales en cada cambio.
-    # Los controles especificos de cada tab son dinamicos, asi que
-    # capturamos el contexto al momento de abrir el modal (Grupo B).
-
     @app.callback(
         Output("active-context", "data"),
         [Input("tabs-main", "value"),
@@ -39,7 +35,6 @@ def register_feedback_callbacks(app):
         }
 
     # ── Grupo B: Abrir modal (pattern-matching) ─────────────────────
-
     @app.callback(
         [Output("fb-modal", "is_open"),
          Output("fb-modal-title", "children"),
@@ -87,7 +82,6 @@ def register_feedback_callbacks(app):
             display_items.append(
                 f"Fechas: {ctx_data['fecha_desde']} - {ctx_data.get('fecha_hasta', '')}"
             )
-        # Include any extra context keys
         skip = {"tab", "fecha_desde", "fecha_hasta"}
         for k, v in ctx_data.items():
             if k not in skip and v not in (None, "", []):
@@ -117,7 +111,6 @@ def register_feedback_callbacks(app):
         return True, title, context_div, graph_info, "", ""
 
     # ── Grupo C: Submit ──────────────────────────────────────────────
-
     @app.callback(
         [Output("fb-status-msg", "children", allow_duplicate=True),
          Output("fb-modal", "is_open", allow_duplicate=True)],
@@ -144,7 +137,8 @@ def register_feedback_callbacks(app):
         graph_label = graph_info.get("graph_label", graph_id) if graph_info else graph_id
         tab = (context or {}).get("tab", "")
 
-        result = create_feedback_issue(
+        # Intentar guardar en BD primero
+        db_saved = _save_feedback_to_db(
             graph_id=graph_id,
             graph_label=graph_label,
             tab=tab,
@@ -153,18 +147,131 @@ def register_feedback_callbacks(app):
             context=context or {},
         )
 
-        if result["success"]:
-            url = result["url"]
-            msg = html.Div([
-                html.Span("Feedback enviado. ", style={"color": "#276749"}),
-                html.A("Ver issue", href=url, target="_blank",
-                        style={"color": "#2C5282"}) if url else None,
-            ], style={"fontSize": "0.85rem"})
-            # Close modal after short display
+        # Intentar crear GitHub Issue si esta habilitado
+        github_url = None
+        github_enabled = _is_github_enabled()
+
+        if github_enabled:
+            result = create_feedback_issue(
+                graph_id=graph_id,
+                graph_label=graph_label,
+                tab=tab,
+                category=category or "otro",
+                description=description.strip(),
+                context=context or {},
+            )
+            if result["success"]:
+                github_url = result["url"]
+                # Actualizar registro en BD con la URL de GitHub
+                if db_saved and github_url:
+                    _update_feedback_github_url(db_saved, github_url)
+
+        # Resultado
+        if db_saved or github_url:
+            parts = [html.Span("Feedback enviado. ", style={"color": "#276749"})]
+            if github_url:
+                parts.append(
+                    html.A("Ver issue", href=github_url, target="_blank",
+                            style={"color": "#2C5282"})
+                )
+            msg = html.Div(parts, style={"fontSize": "0.85rem"})
             return msg, False
         else:
-            msg = html.Div(
-                result.get("error", "Error desconocido"),
-                style={"color": "#9B2C2C", "fontSize": "0.85rem"},
+            # Fallback: solo GitHub (modo sin BD)
+            result = create_feedback_issue(
+                graph_id=graph_id,
+                graph_label=graph_label,
+                tab=tab,
+                category=category or "otro",
+                description=description.strip(),
+                context=context or {},
             )
-            return msg, True
+            if result["success"]:
+                url = result["url"]
+                msg = html.Div([
+                    html.Span("Feedback enviado. ", style={"color": "#276749"}),
+                    html.A("Ver issue", href=url, target="_blank",
+                            style={"color": "#2C5282"}) if url else None,
+                ], style={"fontSize": "0.85rem"})
+                return msg, False
+            else:
+                msg = html.Div(
+                    result.get("error", "Error desconocido"),
+                    style={"color": "#9B2C2C", "fontSize": "0.85rem"},
+                )
+                return msg, True
+
+
+def _save_feedback_to_db(graph_id, graph_label, tab, category, description, context):
+    """Guarda feedback en PostgreSQL. Retorna el ID del registro o None."""
+    try:
+        from src.auth.manager import get_db_session, auth_enabled
+        if not auth_enabled():
+            return None
+
+        from src.auth.models import Feedback
+        from flask_login import current_user
+
+        session = get_db_session()
+        if not session:
+            return None
+
+        try:
+            fb = Feedback(
+                graph_id=graph_id,
+                graph_label=graph_label,
+                tab=tab,
+                category=category,
+                description=description,
+                context=context,
+                created_by=current_user.id if current_user.is_authenticated else None,
+            )
+            session.add(fb)
+            session.commit()
+            fb_id = fb.id
+            return fb_id
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error("Error guardando feedback en BD: %s", e)
+        return None
+
+
+def _update_feedback_github_url(feedback_id, url):
+    """Actualiza el campo github_issue_url de un feedback existente."""
+    try:
+        from src.auth.manager import get_db_session
+        from src.auth.models import Feedback
+        session = get_db_session()
+        if not session:
+            return
+        try:
+            fb = session.get(Feedback, feedback_id)
+            if fb:
+                fb.github_issue_url = url
+                session.commit()
+        finally:
+            session.close()
+    except Exception as e:
+        logger.error("Error actualizando GitHub URL en feedback: %s", e)
+
+
+def _is_github_enabled():
+    """Consulta app_config para ver si GitHub Issues esta habilitado."""
+    try:
+        from src.auth.manager import get_db_session, auth_enabled
+        if not auth_enabled():
+            return True  # Sin BD, GitHub es el unico canal
+
+        from src.auth.models import AppConfig
+        session = get_db_session()
+        if not session:
+            return True
+
+        try:
+            config = session.get(AppConfig, 'github_issues_enabled')
+            return config and config.value.lower() == 'true'
+        finally:
+            session.close()
+    except Exception:
+        return True

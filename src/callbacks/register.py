@@ -13,12 +13,14 @@ from src.tabs.empresas import register_empresas_callbacks
 from src.tabs.flujos import register_flujos_callbacks
 from src.tabs.genero import register_genero_callbacks
 from src.callbacks.feedback import register_feedback_callbacks
+from src.tabs.admin import register_admin_callbacks
 
 
 def register_all_callbacks(app):
     """Registra todos los callbacks de la aplicacion."""
     register_global_callbacks(app)
     register_feedback_callbacks(app)
+    register_admin_callbacks(app)
     register_resumen_callbacks(app)
     register_analisis_callbacks(app)
     register_sectorial_callbacks(app)

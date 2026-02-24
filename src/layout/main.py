@@ -1,13 +1,13 @@
 """
-Layout principal del dashboard: 6 tabs + header institucional + footer.
+Layout principal del dashboard: tabs + header institucional + footer.
 """
 
 from dash import html, dcc
 from src.data.cache import cache
-from src.layout.feedback_components import create_feedback_modal
+from src.layout.feedback_components import create_feedback_modal, set_feedback_enabled
 
 
-def create_main_layout():
+def create_main_layout(role='admin', user_name=''):
     """Construye el layout principal de la aplicacion."""
     periods = cache.periods
     period_options = [{'label': p, 'value': p} for p in periods]
@@ -18,11 +18,55 @@ def create_main_layout():
 
     last_period = cache.last_period
 
+    is_admin = role == 'admin'
+
+    # Habilitar/deshabilitar feedback buttons segun rol
+    set_feedback_enabled(is_admin)
+
+    # Tabs base
+    tabs = [
+        dcc.Tab(label='Resumen', value='tab-resumen'),
+        dcc.Tab(label='Analisis', value='tab-analisis'),
+        dcc.Tab(label='Remuneraciones', value='tab-remuneraciones'),
+        dcc.Tab(label='Empresas', value='tab-empresas'),
+        dcc.Tab(label='Flujos', value='tab-flujos'),
+        dcc.Tab(label='Genero', value='tab-genero'),
+        dcc.Tab(label='Comparaciones', value='tab-comparaciones'),
+        dcc.Tab(label='Alertas', value='tab-alertas'),
+        dcc.Tab(label='Datos', value='tab-datos'),
+        dcc.Tab(label='Metodologia', value='tab-metodologia'),
+    ]
+
+    # Tab admin solo para admins
+    if is_admin:
+        tabs.append(dcc.Tab(label='Admin', value='tab-admin'))
+
+    # User info en header (solo si hay usuario)
+    user_info = []
+    if user_name:
+        user_info = [
+            html.Div([
+                html.Span(user_name, className="sipa-user-name"),
+                html.Span(f" ({role})", style={'fontSize': '0.75rem', 'opacity': '0.7'}),
+                html.A("Salir", href="/logout", className="sipa-logout-link"),
+            ], className="sipa-user-info")
+        ]
+
+    # Componentes que solo van para admin
+    admin_components = []
+    if is_admin:
+        admin_components.append(create_feedback_modal())
+
     return html.Div([
         # Header institucional
         html.Div([
-            html.H1("Panel de Monitoreo de Empleo Registrado"),
-            html.P("SIPA | Republica Argentina", className="sipa-subtitle")
+            html.Div([
+                html.Div([
+                    html.H1("Panel de Monitoreo de Empleo Registrado"),
+                    html.P("SIPA | Republica Argentina", className="sipa-subtitle")
+                ]),
+                html.Div(user_info)
+            ], className="sipa-header-inner")
         ], className="sipa-header"),
 
         # Controles globales
@@ -55,19 +99,8 @@ def create_main_layout():
             ], className="row")
         ], className="sipa-controls"),
 
-        # Tabs: 10 tabs (empleo + remuneraciones + empresas + flujos + genero + utils)
-        dcc.Tabs(id='tabs-main', value='tab-resumen', children=[
-            dcc.Tab(label='Resumen', value='tab-resumen'),
-            dcc.Tab(label='Analisis', value='tab-analisis'),
-            dcc.Tab(label='Remuneraciones', value='tab-remuneraciones'),
-            dcc.Tab(label='Empresas', value='tab-empresas'),
-            dcc.Tab(label='Flujos', value='tab-flujos'),
-            dcc.Tab(label='Genero', value='tab-genero'),
-            dcc.Tab(label='Comparaciones', value='tab-comparaciones'),
-            dcc.Tab(label='Alertas', value='tab-alertas'),
-            dcc.Tab(label='Datos', value='tab-datos'),
-            dcc.Tab(label='Metodologia', value='tab-metodologia'),
-        ], className="custom-tabs"),
+        # Tabs
+        dcc.Tabs(id='tabs-main', value='tab-resumen', children=tabs, className="custom-tabs"),
 
         # Contenido con loading state
         dcc.Loading(
@@ -80,14 +113,17 @@ def create_main_layout():
         # Store de contexto activo para feedback
         dcc.Store(id="active-context", data={}),
 
-        # Modal de feedback (unico, compartido por todos los graficos)
-        create_feedback_modal(),
+        # Store de info de usuario
+        dcc.Store(id="user-info", data={"role": role, "name": user_name}),
+
+        # Modal de feedback (solo admin)
+        *admin_components,
 
         # Footer institucional
         html.Div([
             html.Span(f"Datos hasta: {last_period}"),
             html.Span(" | ", style={'margin': '0 0.5rem'}),
-            html.Span("Fuente: SIPA / MTEySS"),
+            html.Span("Fuente: SIPA | Ministerio de Capital Humano"),
             html.Span(" | ", style={'margin': '0 0.5rem'}),
             html.Span("Republica Argentina"),
         ], className="sipa-footer")

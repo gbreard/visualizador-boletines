@@ -8,13 +8,27 @@ import dash_bootstrap_components as dbc
 # Registro global: graph_id -> label humano legible
 GRAPH_LABELS = {}
 
+# Flag global para habilitar/deshabilitar feedback buttons
+_feedback_enabled = True
+
+
+def set_feedback_enabled(enabled):
+    """Setea si los botones de feedback se renderizan o no."""
+    global _feedback_enabled
+    _feedback_enabled = enabled
+
 
 def graph_with_feedback(children, graph_id, graph_label):
     """
     Envuelve un componente (tipicamente dcc.Graph) en un div relativo
     con un boton de feedback absoluto en la esquina superior derecha.
+
+    Si feedback esta deshabilitado, retorna solo el children sin wrapper.
     """
     GRAPH_LABELS[graph_id] = graph_label
+
+    if not _feedback_enabled:
+        return children
 
     return html.Div([
         children,

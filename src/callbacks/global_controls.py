@@ -45,4 +45,16 @@ def register_global_callbacks(app):
             return create_datos_layout()
         elif active_tab == 'tab-metodologia':
             return create_metodologia_layout()
+        elif active_tab == 'tab-admin':
+            from src.auth.manager import auth_enabled
+            if auth_enabled():
+                from flask_login import current_user
+                if current_user.is_authenticated and current_user.is_admin:
+                    from src.tabs.admin import create_admin_layout
+                    return create_admin_layout()
+            else:
+                # Dev mode: acceso libre
+                from src.tabs.admin import create_admin_layout
+                return create_admin_layout()
+            return html.Div("Acceso no autorizado", className="text-center p-5")
         return html.Div("Vista no disponible", className="text-center p-5")
