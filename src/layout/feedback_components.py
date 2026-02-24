@@ -8,14 +8,22 @@ import dash_bootstrap_components as dbc
 # Registro global: graph_id -> label humano legible
 GRAPH_LABELS = {}
 
-# Flag global para habilitar/deshabilitar feedback buttons
-_feedback_enabled = True
+
+def _is_feedback_enabled():
+    """Verifica en tiempo real si el usuario actual puede dar feedback."""
+    try:
+        from src.auth.manager import auth_enabled
+        if not auth_enabled():
+            return True  # Dev mode: siempre habilitado
+        from flask_login import current_user
+        return current_user.is_authenticated and current_user.is_admin
+    except Exception:
+        return True  # Fallback: habilitado
 
 
 def set_feedback_enabled(enabled):
-    """Setea si los botones de feedback se renderizan o no."""
-    global _feedback_enabled
-    _feedback_enabled = enabled
+    """Legacy no-op, kept for backwards compatibility."""
+    pass
 
 
 def graph_with_feedback(children, graph_id, graph_label):
@@ -27,7 +35,7 @@ def graph_with_feedback(children, graph_id, graph_label):
     """
     GRAPH_LABELS[graph_id] = graph_label
 
-    if not _feedback_enabled:
+    if not _is_feedback_enabled():
         return children
 
     return html.Div([
