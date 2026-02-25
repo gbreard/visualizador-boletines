@@ -1,185 +1,153 @@
-# 🔄 Flujo de Desarrollo y Producción
+# Flujo de Desarrollo
 
-Este documento explica cómo trabajar en desarrollo local y sincronizar cambios a producción.
+Workflow de desarrollo local a produccion en Render.
 
-## 📁 Estructura de Trabajo
+## Entorno Local
 
-```
-Visualizador_boletines/
-├── src/              → DESARROLLO (editas aquí)
-├── deploy/           → PRODUCCIÓN (se sincroniza automáticamente)
-└── sincronizar.bat   → Script para pasar cambios a producción
-```
-
-## 🖥️ Desarrollo Local
-
-### 1. Ejecutar Dashboard Localmente
-
-**Opción A: Doble clic en `ejecutar_local.bat`**
-
-**Opción B: Desde terminal:**
-```bash
-cd src
-python dashboard.py
-```
-
-El dashboard estará disponible en: http://localhost:8050
-
-### 2. Hacer Cambios
-
-Edita los archivos en `src/`:
-- `src/dashboard.py` - Para cambios en el dashboard
-- `src/preprocesamiento.py` - Para cambios en procesamiento Excel→CSV
-- `src/preprocesar_csv_a_parquet.py` - Para cambios en optimización
-
-### 3. Probar Cambios
-
-1. Guarda los cambios
-2. Refresca el navegador (F5) 
-3. El dashboard se recarga automáticamente con los cambios
-
-## 🚀 Sincronizar a Producción
-
-### Método 1: Con Confirmación (Recomendado)
-
-**Doble clic en `sincronizar.bat`**
-
-El script:
-1. Detecta qué archivos cambiaron
-2. Te muestra los cambios
-3. Pide confirmación
-4. Copia archivos a `deploy/`
-5. Pregunta si quieres subir a GitHub
-6. Sube cambios (Render despliega automáticamente)
-
-### Método 2: Sincronización Rápida
+### Setup inicial
 
 ```bash
-python sincronizar_a_produccion.py --quick
+# Crear entorno virtual
+python -m venv venv
+source venv/bin/activate      # Linux/Mac
+venv\Scripts\activate         # Windows
+
+# Instalar dependencias
+pip install -r requirements.txt
 ```
 
-Sincroniza y sube todo sin preguntar (útil cuando estás seguro).
-
-### Método 3: Manual
+### Ejecutar sin BD (modo desarrollo)
 
 ```bash
-# 1. Copiar dashboard
-copy src\dashboard.py deploy\dashboard.py
-
-# 2. Copiar datos (si cambiaron)
-xcopy data\optimized\*.parquet deploy\datos_rapidos\ /Y
-xcopy data\processed\*.csv deploy\datos_limpios\ /Y
-
-# 3. Subir a GitHub
-cd deploy
-git add -A
-git commit -m "Actualización"
-git push origin master
+python src/app.py
 ```
 
-## 📊 Actualizar Datos
+Dashboard corre en http://localhost:8050 con acceso admin publico. Ideal para desarrollo de visualizaciones.
 
-Si tienes un nuevo Excel:
-
-### 1. Procesar Excel
+### Ejecutar con BD local
 
 ```bash
-# Coloca el Excel en data/raw/
-cd src
-python preprocesamiento.py
-python preprocesar_csv_a_parquet.py
+# Opcion 1: PostgreSQL local
+export DATABASE_URL=postgresql://user:pass@localhost/dbname
+
+# Opcion 2: Conectar a BD remota (Render)
+export DATABASE_URL=postgresql://user:pass@host/dbname?sslmode=require
+
+# Inicializar BD (primera vez)
+python scripts/init_db.py
+
+# Arrancar
+python src/app.py
 ```
 
-### 2. Probar Localmente
+## Actualizar Datos
+
+Cuando hay nuevas publicaciones de datos del OEDE:
 
 ```bash
-python dashboard.py
-# Verifica que todo funcione
+# 1. Descargar archivos fuente
+python scripts/download_oede.py --all
+
+# 2. Preprocesar (genera CSV + Parquet)
+python scripts/preprocess/empleo_trimestral.py
+python scripts/preprocess/remuneraciones_mes.py
+python scripts/preprocess/empresas.py
+python scripts/preprocess/flujos.py
+python scripts/preprocess/genero.py
+python scripts/preprocess/ipc.py
+
+# 3. Verificar que el dashboard muestra los nuevos datos
+python src/app.py
 ```
 
-### 3. Sincronizar a Producción
+Los archivos procesados en `data/processed/` y `data/optimized/` estan en git, asi que al commitear se actualizan en produccion.
+
+## Hacer Cambios de Codigo
+
+### Donde va cada cosa
+
+| Quiero... | Archivo/modulo |
+|-----------|---------------|
+| Agregar una tab nueva | `src/tabs/nueva.py` + registrar en `src/callbacks/register.py` + agregar en `src/layout/main.py` |
+| Modificar una visualizacion | `src/tabs/<tab>.py` (layout y callbacks en el mismo archivo) |
+| Cambiar estilos | `assets/custom.css` |
+| Agregar un dataset | `src/data/loader.py` + procesador en `scripts/preprocess/` |
+| Modificar autenticacion | `src/auth/` |
+| Cambiar componentes UI | `src/layout/components.py` o `feedback_components.py` |
+| Agregar feedback a componente | Usar `graph_with_feedback()` de `src/layout/feedback_components.py` |
+
+### Estructura de una tab
+
+Cada archivo en `src/tabs/` sigue el patron:
+
+```python
+# src/tabs/mi_tab.py
+
+def create_mi_tab_layout():
+    """Retorna el layout Dash de la tab."""
+    return html.Div([...])
+
+def register_mi_tab_callbacks(app):
+    """Registra los callbacks interactivos."""
+    @app.callback(Output(...), Input(...))
+    def update_grafico(...):
+        data = cache.get_ref('dataset_key')
+        fig = px.line(data, ...)
+        return fig
+```
+
+## Testing
 
 ```bash
-cd ..
-sincronizar.bat
+# Ejecutar todos los tests
+pytest tests/
+
+# Ejecutar un test especifico
+pytest tests/test_processing.py -v
 ```
 
-## 🔍 Verificación
+Tests disponibles:
+- `test_processing.py` — Parseo de periodos y calculos de variaciones
+- `test_cache.py` — Singleton DataCache
+- `test_loader.py` — Carga de datos
+- `test_ingestion.py` — Ingesta a BD
+- `test_tabs.py` — Smoke tests de todas las tabs
 
-### Dashboard Local
-- URL: http://localhost:8050
-- Archivos: `src/dashboard.py`
-- Datos: `data/processed/` y `data/optimized/`
+## Deploy a Produccion
 
-### Dashboard Producción
-- GitHub: https://github.com/gbreard/visualizador-boletines
-- Render: Se despliega automáticamente al hacer push
-- Archivos: `deploy/`
+### Flujo normal
 
-## 📝 Flujo Típico de Trabajo
-
-```mermaid
-graph LR
-    A[Editar src/dashboard.py] --> B[Probar local :8050]
-    B --> C{¿Funciona?}
-    C -->|No| A
-    C -->|Sí| D[sincronizar.bat]
-    D --> E[Confirmar cambios]
-    E --> F[Push a GitHub]
-    F --> G[Render despliega]
-```
-
-## 🛠️ Comandos Útiles
-
-### Ver cambios pendientes
 ```bash
-python sincronizar_a_produccion.py --status
+# 1. Commitear cambios
+git add <archivos>
+git commit -m "Descripcion del cambio"
+
+# 2. Push a main (dispara auto-deploy en Render)
+git push origin master:main
 ```
 
-### Solo sincronizar archivos (sin Git)
-```bash
-python sincronizar_a_produccion.py --no-git
+Render detecta el push a `main`, instala dependencias y ejecuta:
+```
+gunicorn src.app:server --bind 0.0.0.0:$PORT --workers 1 --timeout 120
 ```
 
-### Revertir cambios en deploy
-```bash
-cd deploy
-git checkout -- .
-```
+### Variables de entorno en produccion
 
-## ⚠️ Notas Importantes
+Configuradas en el dashboard de Render:
 
-1. **SIEMPRE prueba localmente** antes de sincronizar
-2. **Los cambios en `deploy/` se pierden** - siempre edita en `src/`
-3. **Render despliega automáticamente** al detectar cambios en GitHub
-4. **El script ajusta rutas automáticamente** (../data → datos_limpios)
+| Variable | Descripcion |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL managed de Render (auto-configurada) |
+| `SECRET_KEY` | Clave segura para sesiones Flask |
+| `GITHUB_FEEDBACK_TOKEN` | Token GitHub para issues (opcional) |
+| `PYTHON_VERSION` | `3.11.5` |
 
-## 🔧 Troubleshooting
+## Troubleshooting del Deploy
 
-### Dashboard local no carga
-- Verifica que estés en `src/`: `cd src`
-- Verifica dependencias: `pip install -r ../requirements.txt`
-
-### Sincronización falla
-- Verifica que existan las carpetas `src/` y `deploy/`
-- Ejecuta desde el directorio raíz del proyecto
-
-### GitHub rechaza push
-- Haz pull primero: `cd deploy && git pull origin master`
-- O fuerza el push: `git push --force origin master`
-
-### Render no despliega
-- Verifica en https://dashboard.render.com
-- Revisa logs de deploy en Render
-- Asegúrate que `requirements.txt` esté actualizado
-
-## 📞 Ayuda
-
-Si tienes problemas:
-1. Revisa `docs/GEMINI.md` para documentación técnica
-2. Verifica logs en la terminal
-3. Revisa el dashboard de Render para errores de deploy
-
----
-
-**Recuerda**: Desarrollo en `src/` → Prueba local → `sincronizar.bat` → Producción automática
+| Problema | Solucion |
+|----------|----------|
+| Build falla | Verificar `requirements.txt` (todas las dependencias listadas) |
+| Timeout al iniciar | Verificar que `data/optimized/` tiene Parquets (mucho mas rapido que CSV) |
+| 500 en produccion | Revisar logs en Render dashboard, verificar env vars |
+| BD no conecta | Verificar `DATABASE_URL` en env vars de Render |
+| Datos desactualizados | Actualizar archivos en `data/processed/` y `data/optimized/`, commitear y push |

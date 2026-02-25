@@ -244,7 +244,28 @@ Verificar:
 
 ---
 
-**IMPORTANTE**: Este documento es la referencia definitiva para el formato del Excel. 
-Si el procesamiento falla, verificar PRIMERO que el Excel cumple con estas especificaciones.
+## Fuentes de Datos Adicionales
 
-*Última actualización: 12 de agosto de 2025*
+Ademas del archivo de empleo trimestral, el sistema procesa otros archivos Excel/CSV:
+
+| Archivo | Hojas/Datasets | Script de preprocesamiento |
+|---------|---------------|---------------------------|
+| `empleo_trimestral.xlsx` | C1.1 a C7 | `scripts/preprocess/empleo_trimestral.py` |
+| `remuneraciones_mensual.xlsx` | R1, R2, R3, R4 | `scripts/preprocess/remuneraciones_mes.py` |
+| `empresas_anual.xlsx` | E1, E2, E3 | `scripts/preprocess/empresas.py` |
+| `flujos_empleo.xlsx` | F1, F2, F3 | `scripts/preprocess/flujos.py` |
+| `genero.xlsx` | G1, G2, G3 | `scripts/preprocess/genero.py` |
+| `ipc_mensual.csv` | IPC | `scripts/preprocess/ipc.py` |
+
+Cada procesador extiende la clase base `ExcelProcessor` (`scripts/preprocess/base.py`) y genera archivos CSV en `data/processed/` y Parquet en `data/optimized/`.
+
+Los archivos fuente se descargan con `scripts/download_oede.py` y se guardan en `data/raw/`.
+
+---
+
+**IMPORTANTE**: Este documento es la referencia definitiva para el formato del Excel de empleo trimestral.
+Si el procesamiento falla, verificar PRIMERO que el Excel cumple con estas especificaciones.
+Para los demas archivos, consultar los scripts de preprocesamiento correspondientes.
+
+*Ultima actualizacion: febrero 2026*
+*Version: 3.0 - Arquitectura modular*

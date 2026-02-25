@@ -1,5 +1,12 @@
 # Documentación del Proyecto: Visualizador de Boletines de Empleo
 
+> **NOTA HISTORICA:** Este documento es un registro del desarrollo inicial del proyecto (agosto 2025),
+> cuando consistia en un dashboard monolitico (`dashboard.py`) y un script de preprocesamiento.
+> La arquitectura actual difiere significativamente: el proyecto fue modularizado en multiples
+> modulos (`src/auth/`, `src/tabs/`, `src/callbacks/`, etc.), se agrego autenticacion con
+> Flask-Login + PostgreSQL, sistema de feedback, panel de administracion, y deploy via Render.
+> Consultar `DOCUMENTACION_COMPLETA.md` para la documentacion actualizada.
+
 Este documento sirve como una guía para entender la estructura, el propósito y el estado actual del proyecto "Visualizador de Boletines de Empleo".
 
 ## 1. Resumen del Proyecto
