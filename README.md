@@ -88,15 +88,18 @@ Ver arbol completo en [docs/ESTRUCTURA_PROYECTO.md](docs/ESTRUCTURA_PROYECTO.md)
 
 26+ datasets de 8 fuentes:
 
-| Fuente | Datasets | Frecuencia |
-|--------|----------|-----------|
-| Empleo trimestral (OEDE) | C1.1 a C7 (9 datasets) | Trimestral |
-| Remuneraciones (OEDE) | R1 a R4 + R1-R3 reales | Mensual |
-| Empresas (OEDE) | E1 a E3 | Anual |
-| Flujos de empleo (OEDE) | F1 a F3 | Trimestral |
-| Genero (OEDE) | G1 a G3 | Trimestral |
-| IPC | IPC | Mensual |
-| Descriptores | CIIU, remuneraciones | Estatico |
+| Fuente | Datasets | Frecuencia | Contenido |
+|--------|----------|-----------|-----------|
+| Empleo (OEDE) | C1.1 a C7 | **Trimestral** | Puestos de trabajo por sector, tamano, CIIU |
+| Remuneraciones (OEDE) | R1 a R4 + reales | **Mensual** | Salarios nominales y reales (no es empleo) |
+| Empresas (OEDE) | E1 a E3 | **Anual** | Cantidad de empresas por sector/tamano |
+| Flujos (OEDE) | F1 a F3 | **Trimestral** | Altas, bajas y rotacion de empleo |
+| Genero (OEDE) | G1 a G3 | **Trimestral** | Empleo y salarios por genero |
+| IPC | IPC | **Mensual** | Indice de precios (para deflactar salarios) |
+| Descriptores | CIIU, remuneraciones | Estatico | Tablas de referencia |
+
+> **Nota:** Los datos de empleo del OEDE son exclusivamente **trimestrales**. Los datos mensuales
+> corresponden a remuneraciones e IPC, no a cantidades de empleo.
 
 Pipeline: `scripts/download_oede.py` → `scripts/preprocess/*.py` → `data/optimized/*.parquet`
 

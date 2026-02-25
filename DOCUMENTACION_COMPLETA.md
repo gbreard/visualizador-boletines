@@ -241,14 +241,17 @@ docs/                   # Documentacion adicional
 
 `scripts/download_oede.py` descarga archivos desde URLs oficiales a `data/raw/`:
 
-| Archivo | Contenido | Fuente |
-|---------|-----------|--------|
-| `empleo_trimestral.xlsx` | Empleo C1-C7 | OEDE |
-| `remuneraciones_mensual.xlsx` | Salarios R1-R4 | OEDE |
-| `empresas_anual.xlsx` | Empresas E1-E3 | OEDE |
-| `flujos_empleo.xlsx` | Flujos F1-F3 | OEDE |
-| `genero.xlsx` | Genero G1-G3 | OEDE |
-| `ipc_mensual.csv` | IPC | GitHub (matuteiglesias) |
+| Archivo | Contenido | Frecuencia | Fuente |
+|---------|-----------|-----------|--------|
+| `empleo_trimestral.xlsx` | Empleo C1-C7 | **Trimestral** | OEDE |
+| `remuneraciones_mensual.xlsx` | Salarios R1-R4 | **Mensual** | OEDE |
+| `empresas_anual.xlsx` | Empresas E1-E3 | **Anual** | OEDE |
+| `flujos_empleo.xlsx` | Flujos F1-F3 | **Trimestral** | OEDE |
+| `genero.xlsx` | Genero G1-G3 | **Trimestral** | OEDE |
+| `ipc_mensual.csv` | IPC | **Mensual** | GitHub (matuteiglesias) |
+
+> **Nota:** Los datos de empleo del OEDE son exclusivamente trimestrales. Los unicos datos mensuales
+> son remuneraciones (salarios) e IPC (precios), no cantidades de puestos de trabajo.
 
 ### Etapa 2 — Preprocesamiento
 
@@ -289,16 +292,16 @@ Singleton en `src/data/cache.py`:
 
 ### Datasets Disponibles (26+)
 
-| Grupo | Claves | Frecuencia |
-|-------|--------|-----------|
-| Empleo | C1.1, C1.2, C2.1, C2.2, C3, C4, C5, C6, C7 | Trimestral |
-| Remuneraciones | R1, R2, R3, R4 | Mensual |
-| Remuneraciones reales | R1_real, R2_real, R3_real | Mensual (calculado) |
-| Empresas | E1, E2, E3 | Anual |
-| Flujos | F1, F2, F3 | Trimestral |
-| Genero | G1, G2, G3 | Trimestral |
-| IPC | IPC | Mensual |
-| Descriptores | descriptores_CIIU, descriptores_remuneraciones | Estatico |
+| Grupo | Claves | Frecuencia | Contenido |
+|-------|--------|-----------|-----------|
+| Empleo | C1.1, C1.2, C2.1, C2.2, C3, C4, C5, C6, C7 | **Trimestral** | Puestos de trabajo registrado |
+| Remuneraciones | R1, R2, R3, R4 | **Mensual** | Salarios (no es empleo) |
+| Remuneraciones reales | R1_real, R2_real, R3_real | **Mensual** (calculado) | Salarios deflactados por IPC |
+| Empresas | E1, E2, E3 | **Anual** | Cantidad de empresas |
+| Flujos | F1, F2, F3 | **Trimestral** | Altas, bajas, rotacion |
+| Genero | G1, G2, G3 | **Trimestral** | Empleo y salarios por genero |
+| IPC | IPC | **Mensual** | Indice de precios al consumidor |
+| Descriptores | descriptores_CIIU, descriptores_remuneraciones | Estatico | Tablas de referencia |
 
 ---
 
